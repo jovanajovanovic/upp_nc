@@ -36,7 +36,7 @@ export class ActivateUserComponent implements OnInit {
       res => {
         this.formFields = res.formFields;
         this.taskId = res.taskId;
-        alert(this.taskId);
+   //     alert(this.taskId);
       },
       err => {
         alert("Error occured!");
@@ -45,7 +45,7 @@ export class ActivateUserComponent implements OnInit {
   }
 
   onSubmit(){
-    alert(JSON.stringify(this.inputData.value));
+ //   alert(JSON.stringify(this.inputData.value));
     //pozovemo funkciju activate user
     this.userService.activateUser(this.inputData.value, this.taskId).subscribe(
       res=> {

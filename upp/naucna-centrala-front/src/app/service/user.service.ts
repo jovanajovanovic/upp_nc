@@ -10,7 +10,7 @@ export class UserService {
   constructor(private httpClient : HttpClient) { }
 
   login(login_dto){
-    return this.httpClient.post("api/login", login_dto, {headers: this.headers, responseType: 'json', withCredentials: true});
+    return this.httpClient.post<any>("api/login", login_dto, {headers: this.headers, responseType: 'json', withCredentials: true});
   }
 
 

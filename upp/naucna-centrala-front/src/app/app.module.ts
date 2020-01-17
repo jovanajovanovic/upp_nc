@@ -16,6 +16,10 @@ import { AcceptReviewerComponent } from './accept-reviewer/accept-reviewer.compo
 import { ActivateUserComponent } from './user/activate-user/activate-user.component';
 import { RegisterMagazineComponent } from './magazine/register-magazine/register-magazine.component';
 import { InputEditorAndReviewerComponent } from './magazine/input-editor-and-reviewer/input-editor-and-reviewer.component';
+import { CheckDataComponent } from './magazine/check-data/check-data.component';
+import { ActivateMagazineComponent } from './magazine/activate-magazine/activate-magazine.component';
+import { ViewMagazinesComponent } from './magazine/view-magazines/view-magazines.component';
+import { ChangeInputDataComponent } from './magazine/change-input-data/change-input-data.component';
 
 
 
@@ -30,7 +34,11 @@ import { InputEditorAndReviewerComponent } from './magazine/input-editor-and-rev
     AcceptReviewerComponent,
     ActivateUserComponent,
     RegisterMagazineComponent,
-    InputEditorAndReviewerComponent
+    InputEditorAndReviewerComponent,
+    CheckDataComponent,
+    ActivateMagazineComponent,
+    ViewMagazinesComponent,
+    ChangeInputDataComponent
   ],
   imports: [
     BrowserModule,

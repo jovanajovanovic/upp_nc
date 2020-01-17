@@ -15,7 +15,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public boolean login(DTOLogin dto) {
-        return userRepository.findByUsername(dto.getUsername()) != null;
+        return userRepository.findByUsernameAndActivate(dto.getUsername(), true) != null;
     }
 
 

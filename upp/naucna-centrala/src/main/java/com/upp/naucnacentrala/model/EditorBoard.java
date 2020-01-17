@@ -13,8 +13,7 @@ public class EditorBoard {
     @OneToOne
     private ScientificField scientificField;
 
-    @ManyToOne()
-    @JoinColumn(name = "magazine_id", nullable = false)
+    @OneToOne
     private Magazine magazine;
 
     public EditorBoard() {

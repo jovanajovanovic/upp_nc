@@ -37,13 +37,21 @@ public class SaveMagazineService implements JavaDelegate {
         MagazineRegisterDto magazine = (MagazineRegisterDto) execution.getVariable("magazine");
         System.out.println(magazine);
 
+        Magazine newMagazine = magazineRepository.findByTitle(magazine.getName());
+
         //dodamo novi casopis
         Editor chiefEditor = this.editorRepository.findByUsername(magazine.getChiefEditor());
         List<ScientificField> scientificFields = getScientificFields(magazine.getScientific());
 
-        Magazine newMagazine = new Magazine(magazine.getName(), magazine.getIssn(), scientificFields, chiefEditor, new HashMap<>(),
-                new HashSet<>(),MagazineType.valueOf(magazine.getPayment()) , false);
-
+        if(newMagazine != null){
+            newMagazine.setTitle(magazine.getName());
+            newMagazine.setIssn(magazine.getIssn());
+            newMagazine.setScientificField(scientificFields);
+            newMagazine.setType(MagazineType.valueOf(magazine.getPayment()));
+        }else {
+            newMagazine = new Magazine(magazine.getName(), magazine.getIssn(), scientificFields, chiefEditor,
+                    new HashSet<>(), MagazineType.valueOf(magazine.getPayment()), false);
+        }
         magazineRepository.save(newMagazine);
 
     }

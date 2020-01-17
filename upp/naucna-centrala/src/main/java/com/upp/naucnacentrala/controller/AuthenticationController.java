@@ -2,6 +2,8 @@ package com.upp.naucnacentrala.controller;
 
 import com.upp.naucnacentrala.dto.DTOLogin;
 import com.upp.naucnacentrala.dto.DtoToken;
+import com.upp.naucnacentrala.model.User;
+import com.upp.naucnacentrala.repository.UserRepository;
 import com.upp.naucnacentrala.security.TokenUtils;
 
 import com.upp.naucnacentrala.services.AuthenticationService;
@@ -41,6 +43,9 @@ public class AuthenticationController {
     @Autowired
     private TokenUtils tokenUtils;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> loginUser(@RequestBody DTOLogin dtoLogin){
@@ -59,6 +64,8 @@ public class AuthenticationController {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(dtoLogin.getUsername());
                 String tokenValue = this.tokenUtils.generateToken(userDetails);
                 token.setToken(tokenValue);
+                User u = this.userRepository.findByUsername(dtoLogin.getUsername());
+                token.setRole(u.getRole());
 
                 Authentication auth = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dtoLogin.getUsername(), dtoLogin.getPassword()));
 

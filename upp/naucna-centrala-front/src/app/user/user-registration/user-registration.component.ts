@@ -26,7 +26,7 @@ export class UserRegistrationComponent implements OnInit {
         this.formFieldsDto = res;
         this.formFields = res.formFields;
         this.processInstance  = res.processInstanceId;
-        alert(this.processInstance);
+   //     alert(this.processInstance);
       },
       err => {
         console.log("Error occured");
@@ -64,10 +64,10 @@ export class UserRegistrationComponent implements OnInit {
 
 
   onSubmit(){
-    alert("Uneti podaci");
+ //   alert("Uneti podaci");
     let o = new Array();
     let value = this.regUserForm.value;
-    alert(JSON.stringify(value));
+ //   alert(JSON.stringify(value));
     for (var property in value) {
       o.push({fieldId : property, fieldValue : value[property]});
     }

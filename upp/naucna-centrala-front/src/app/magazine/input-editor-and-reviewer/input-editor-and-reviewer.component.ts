@@ -17,6 +17,8 @@ export class InputEditorAndReviewerComponent implements OnInit {
   inputEditorBoard : FormGroup;
   editors;
   reviewers;
+  editorList = [];
+  reviewerList = [];
 
   constructor(private router: Router,private route: ActivatedRoute, private fb : FormBuilder, private taskService : TaskService, private magazineService: MagazineService) { }
 
@@ -53,6 +55,12 @@ export class InputEditorAndReviewerComponent implements OnInit {
           this.magazine = data;
           this.getEditors();
           this.getReviewers();
+          if(this.magazine.editorList != undefined){
+            this.editorList = this.magazine.editorList;
+          }
+          if(this.magazine.reviewerList != undefined){
+            this.reviewerList = this.magazine.reviewerList;
+          }
         },
         err => {
           alert("Error occured = get magazine!");
@@ -61,6 +69,7 @@ export class InputEditorAndReviewerComponent implements OnInit {
     }
 
     getEditors(){
+   //   alert(this.magazine.scientific);
       this.magazineService.getEditors(this.magazine.scientific).subscribe
       (
         res => {
@@ -92,8 +101,8 @@ export class InputEditorAndReviewerComponent implements OnInit {
     }
 
     onSubmit(){
-      alert(JSON.stringify(this.inputEditorBoard.value));
-      this.magazineService.addBoard(this.inputEditorBoard, this.id).subscribe(
+ //     alert(JSON.stringify(this.inputEditorBoard.value));
+      this.magazineService.addBoard(this.inputEditorBoard.value, this.id).subscribe(
         res => {
           alert("Success adding edit board");
           this.router.navigate(['tasks']);

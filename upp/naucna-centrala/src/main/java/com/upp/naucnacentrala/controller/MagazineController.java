@@ -2,8 +2,10 @@ package com.upp.naucnacentrala.controller;
 
 import com.upp.naucnacentrala.dto.*;
 import com.upp.naucnacentrala.model.Editor;
+import com.upp.naucnacentrala.model.Magazine;
 import com.upp.naucnacentrala.security.TokenUtils;
 import com.upp.naucnacentrala.services.EditorService;
+import com.upp.naucnacentrala.services.MagazineService;
 import com.upp.naucnacentrala.services.ReviewerService;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormField;
@@ -46,6 +48,9 @@ public class MagazineController {
     @Autowired
     private ReviewerService reviewerService;
 
+    @Autowired
+    private MagazineService magazineService;
+
 
     @GetMapping(path="/getAddMagazineForm", produces = "application/json")
     public @ResponseBody
@@ -79,7 +84,19 @@ public class MagazineController {
         //ovde sad treba samo da postavimo ovog usera za procesnu instancu to je to
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
-        runtimeService.setVariable(processInstanceId, "magazine", magazine);
+
+        MagazineRegisterDto magazineDto = (MagazineRegisterDto) runtimeService.getVariable(processInstanceId, "magazine");
+        if(magazineDto != null){
+            //radimo izmenu magazina, menjamo samo neke delove
+            magazineDto.setName(magazine.getName());
+            magazineDto.setIssn(magazine.getIssn());
+            magazineDto.setPayment(magazine.getPayment());
+            magazineDto.setScientific(magazine.getScientific());
+        }else {
+            magazineDto = magazine;
+        }
+
+        runtimeService.setVariable(processInstanceId, "magazine", magazineDto);
 
         try {
             formService.submitTaskForm(taskId, map);
@@ -130,11 +147,13 @@ public class MagazineController {
 
     //metoda koja vraca magazin koji se unosi
     @GetMapping(value = "/getMagazine/{taskId}", produces = "application/json")
-    public @ResponseBody ResponseEntity<MagazineRegisterDto> getMagazine(@PathVariable String taskId){
+    public @ResponseBody ResponseEntity<MagazineDto> getMagazine(@PathVariable String taskId){
         Task t = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = t.getProcessInstanceId();
         MagazineRegisterDto magazine = (MagazineRegisterDto) runtimeService.getVariable(processInstanceId, "magazine");
-        return new ResponseEntity<MagazineRegisterDto>(magazine, HttpStatus.OK);
+        //napravicemo i da vrati sve recenzente i sve editore za taj magazin
+        MagazineDto returnMagazine = this.magazineService.makeMagazineDto(magazine);
+        return new ResponseEntity<MagazineDto>(returnMagazine, HttpStatus.OK);
     }
 
     @PostMapping(value = "/getEditors", produces = "application/json")
@@ -153,8 +172,7 @@ public class MagazineController {
 
 
     @PostMapping(path = "/addEditBoard/{taskId}", produces = "application/json")
-    public @ResponseBody
-    ResponseEntity addEditBoard(@RequestBody EditBoardDto boardDto, @PathVariable String taskId, HttpServletRequest http){
+    public @ResponseBody ResponseEntity addEditBoard(@RequestBody EditBoardDto boardDto, @PathVariable String taskId, HttpServletRequest http){
         System.out.println(">> ADD BOARD MAGAZINE: ");
         System.out.println(boardDto);
         HttpServletRequest httpServletRequest = (HttpServletRequest)http;
@@ -181,5 +199,67 @@ public class MagazineController {
         }
 
         return new ResponseEntity<> (HttpStatus.OK);
+    }
+
+
+    @PostMapping(path = "/checkData/{taskId}", produces = "application/json")
+    public @ResponseBody ResponseEntity checkData(@RequestBody CheckDataDto checkDto, @PathVariable String taskId, HttpServletRequest http){
+        System.out.println(">> CHECK  MAGAZINE DATA: ");
+        System.out.println(checkDto);
+        HttpServletRequest httpServletRequest = (HttpServletRequest)http;
+        String authToken = httpServletRequest.getHeader("X-Auth-Token");
+        String username = this.tokenUtils.getUsernameFromToken(authToken);
+        System.out.println("Ulogovan korisnik je editor: " + username);
+
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        String processInstanceId = task.getProcessInstanceId();
+
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("ok", checkDto.isOk());
+
+        runtimeService.setVariable(processInstanceId, "ok", checkDto.isOk());
+
+        try {
+            formService.submitTaskForm(taskId, map);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<> (HttpStatus.OK);
+    }
+
+
+    @PostMapping(path = "/activateMagazine/{taskId}", produces = "application/json")
+    public @ResponseBody ResponseEntity activate(@RequestBody ActivateMagazineDto activateMagazineDto, @PathVariable String taskId, HttpServletRequest http){
+        System.out.println(">> ACTIVATE  MAGAZINE: ");
+        System.out.println(activateMagazineDto);
+        HttpServletRequest httpServletRequest = (HttpServletRequest)http;
+        String authToken = httpServletRequest.getHeader("X-Auth-Token");
+        String username = this.tokenUtils.getUsernameFromToken(authToken);
+        System.out.println("Ulogovan korisnik je editor: " + username);
+
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        String processInstanceId = task.getProcessInstanceId();
+
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("activate", activateMagazineDto.isActivate());
+
+        runtimeService.setVariable(processInstanceId, "activate", activateMagazineDto.isActivate());
+
+        try {
+            formService.submitTaskForm(taskId, map);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<> (HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/allMagazines", produces = "application/json")
+    public @ResponseBody ResponseEntity<List<Magazine>> getMagazines(){
+        List<Magazine> magazines = this.magazineService.getAllMagazines();
+        return new ResponseEntity<>(magazines, HttpStatus.OK);
     }
 }

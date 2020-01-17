@@ -3,9 +3,7 @@ package com.upp.naucnacentrala.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Magazine {
@@ -24,8 +22,7 @@ public class Magazine {
     @OneToOne
     private Editor chiefEditor;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "magazine")
-    private Map<String,EditorBoard> editorBoards;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Reviewer> reviewers;
@@ -39,12 +36,11 @@ public class Magazine {
     public Magazine() {
     }
 
-    public Magazine(String title, String issn, List<ScientificField> scientificField, Editor chiefEditor, Map<String, EditorBoard> editorBoards, Set<Reviewer> reviewers, MagazineType type, boolean activate) {
+    public Magazine(String title, String issn, List<ScientificField> scientificField, Editor chiefEditor, Set<Reviewer> reviewers, MagazineType type, boolean activate) {
         this.title = title;
         this.issn = issn;
         this.scientificField = scientificField;
         this.chiefEditor = chiefEditor;
-        this.editorBoards = editorBoards;
         this.reviewers = reviewers;
         this.type = type;
         this.activate = activate;
@@ -98,13 +94,7 @@ public class Magazine {
         this.chiefEditor = chiefEditor;
     }
 
-    public Map<String, EditorBoard> getEditorBoards() {
-        return editorBoards;
-    }
 
-    public void setEditorBoards(Map<String, EditorBoard> editorBoards) {
-        this.editorBoards = editorBoards;
-    }
 
     public Set<Reviewer> getReviewers() {
         return reviewers;

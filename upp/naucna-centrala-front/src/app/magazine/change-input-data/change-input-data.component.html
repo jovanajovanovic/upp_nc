@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="row"> 
+        <div class="col-2"></div>
+        <div class="col-6">
+            <form class="form-group" [formGroup]="magazineForm" (ngSubmit)="onSubmit()">
+                <div *ngFor="let field of formFields" >
+                    <label for={{field.id}} *ngIf="field.type.name !='string' || field.id=='scientific'">{{field.label}}</label>
+            
+                    <input type="text" formControlName={{field.id}} value="{{field.value.value}}" ngModel class="form-control" *ngIf="field.type.name=='string'  && field.id != 'scientific'" >
+        
+                    <input type="checkbox" formControlName={{field.id}}  ngModel class="form-control"  *ngIf="field.type.name=='boolean'">
+                    <input type="number" formControlName={{field.id}} placeholder="{{field.label}}" ngModel class="form-control" *ngIf="field.type.name=='long'">
+                    <p *ngIf="field.id =='scientific'"> {{magazineForm.value.scientific}}</p>
+                    <select multiple formControlName={{field.id}} *ngIf="field.id=='scientific'" class="form-control" >
+                    <option *ngFor="let val of scientificFields" value={{val.name}}>
+                        {{val.name}}
+                    </option>
+                    </select>
+                    <select formControlName={{field.id}} class="form-control" name="field.id" *ngIf="field.type.name=='enum'" [value]="field.value.value">
+                        <option *ngFor="let val of enumValues" value={{val}}>
+                          {{field.type.values[val]}}
+                        </option>
+                      </select>
+                <br>
+                </div>
+
+                <button type="submit" class="btn btn-primary"> Add magazine </button>
+            </form>
+        </div>
+        <div></div>
+    </div>
+</div>

@@ -4,7 +4,7 @@
         <div class="col-2"></div>
         <div class="col-6">
             <!-- prvo cemo ispisati korisnika kojeg dobijemo -->
-           
+           <p> An email with a hash code has been sent to you. Please enter it to activate your acount!</p>
             <form class="form-group" [formGroup]="inputData" (ngSubmit)="onSubmit()">
                 <div *ngFor="let field of formFields" >
                     <label for={{field.id}} *ngIf="field.type.name !='string'">{{field.label}}</label>

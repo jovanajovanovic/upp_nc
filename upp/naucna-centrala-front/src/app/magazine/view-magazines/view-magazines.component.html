@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="row"> 
+        <div class="col-2"></div>
+        <div class="col-6">
+           <table class="table">
+               <thead>
+                   <tr>
+                        <th scope="col"> No. </th>
+                        <th scope="col"> Name </th>
+                        <th scope="col"> ISSN number</th>
+                        <th scope="col"> Payment </th>
+                   </tr>
+               </thead>
+               <tbody> 
+                   <tr *ngFor="let t of magazines; let i = index">
+                        <th scope="row"> {{i+1}} </th>
+                        <td> {{t.title}}  </td> 
+                        <td> {{t.issn}}</td> 
+                        <td> {{t.type}}</td>
+                    </tr>
+                   
+               </tbody>
+           </table>
+        </div>
+        <div></div>
+    </div>
+</div>

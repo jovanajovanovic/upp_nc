@@ -61,7 +61,7 @@ export class RegisterMagazineComponent implements OnInit {
 
 
   onSubmit(){
-    alert(JSON.stringify(this.magazineForm.value));
+  //  alert(JSON.stringify(this.magazineForm.value));
     this.magazineService.saveMagazine(this.magazineForm.value, this.taskId).subscribe(
       res => {
         alert("Success add magazine!");

@@ -22,12 +22,13 @@ export class LoginComponent implements OnInit {
   get formControls() {return this.loginForm.controls}
 
   onSubmit(){
-    alert("Uneti podaci: ");
-    alert(JSON.stringify(this.loginForm.value));
+    //alert("Uneti podaci: ");
+    //alert(JSON.stringify(this.loginForm.value));
     this.userService.login(this.loginForm.value)
     .subscribe(
       result => {
         localStorage.setItem("user", JSON.stringify(result));
+        localStorage.setItem("role",result.role );
         location.replace("http://localhost:4200/tasks");
         alert("Successful login!");
       },

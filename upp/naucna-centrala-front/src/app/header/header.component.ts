@@ -10,10 +10,13 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   logUser : boolean = false;
+  role;
   constructor(private userService : UserService, private router: Router) { }
 
   ngOnInit() {
     this.logUser = this.userService.isLoggedIn();
+    this.role = localStorage.getItem("role");
+  //  alert(JSON.stringify(this.loginUser));
   }
 
 

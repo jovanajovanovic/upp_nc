@@ -33,4 +33,17 @@ export class MagazineService {
   addBoard(dto, taskId){
     return this.httpClient.post<any>("/api/addEditBoard/".concat(taskId), dto, {headers: this.headers});
   }
+
+  checkData(ok, taskId){
+    return this.httpClient.post<any>("/api/checkData/".concat(taskId), ok, {headers : this.headers});
+  }
+
+  activateMagazine(status, taskId){
+    return this.httpClient.post<any>("/api/activateMagazine/".concat(taskId), status, {headers : this.headers});
+
+  }
+
+  getAll(){
+    return this.httpClient.get<any>("/api/allMagazines");
+  }
 }

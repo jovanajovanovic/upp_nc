@@ -11,7 +11,7 @@
       <li class="nav-item" *ngIf="logUser==true">
         <a class="nav-link" (click)="logOut()">LogOut</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="logUser==true && role=='EDITOR'">
         <a class="nav-link" [routerLink]="['/addMagazine']">Add magazine</a>
       </li>
     </ul>

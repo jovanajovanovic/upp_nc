@@ -31,7 +31,7 @@ export class AcceptReviewerComponent implements OnInit {
   }
 
   getTaskForm(){
-      alert(this.id);
+    //  alert(this.id);
       this.taskService.getTaskForm(this.id).subscribe(
         res => {
           this.formFields = res.formFields;
@@ -44,11 +44,11 @@ export class AcceptReviewerComponent implements OnInit {
   }
 
   getRegUser(){
-    alert(this.id);
+   // alert(this.id);
     this.taskService.getRegUser(this.id).subscribe(
       res=> {
         this.regUser = res;
-        alert(JSON.stringify(this.regUser));
+     //   alert(JSON.stringify(this.regUser));
         this.scientifics = this.regUser.scientific.toString();
       }, 
       err => {
@@ -58,8 +58,8 @@ export class AcceptReviewerComponent implements OnInit {
   }
 
   onSubmit(){
-    alert("Uneseni podaci ");
-    alert(JSON.stringify(this.acceptReviewer.value));
+   // alert("Uneseni podaci ");
+ //   alert(JSON.stringify(this.acceptReviewer.value));
     this.userService.acceptReviewer(this.acceptReviewer.value, this.id).subscribe(
       res => {
         alert("Success accept new status!");

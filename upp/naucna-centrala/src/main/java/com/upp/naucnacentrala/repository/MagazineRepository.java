@@ -4,7 +4,11 @@ import com.upp.naucnacentrala.model.Magazine;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MagazineRepository extends CrudRepository<Magazine, Long> {
     Magazine findByTitle(String name);
+
+    List<Magazine> findByActivate(boolean activate);
 }

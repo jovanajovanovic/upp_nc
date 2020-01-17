@@ -41,8 +41,8 @@ public class SendMailService implements JavaDelegate {
 
         mailMessage.setTo(registration.getEmail());
         mailMessage.setSubject("Registration to scientific center");
-        mailMessage.setText(registration.getUsername() +  "Wellcome to scientific center " + ", \n " +
-                "Verify your account! Your activate code is " + hashCode + " .");
+        mailMessage.setText(registration.getUsername() +  ",\n Wellcome to scientific center " + ", \n " +
+                "Verify your account!\n Your activate code is " + hashCode);
 
         javaMailSender.send(mailMessage);
 

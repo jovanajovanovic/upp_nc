@@ -6,7 +6,7 @@
             <!-- prvo cemo ispisati korisnika kojeg dobijemo -->
             <div class="card text-center">
                 <div class="card-header">
-                    About user
+                    About magazine
                 </div>
                 <div class="card-body">
                     <table class="table">
@@ -18,9 +18,49 @@
                             <tr> <th> Scientific fields </th> <td> {{magazine.scientific}}</td></tr>
                         </tbody>
                     </table>
+                    <p> Editors </p>
+                    <table class="table">
+                            <thead>
+                                <tr>
+                                     <th scope="col"> No. </th>
+                                     <th scope="col"> Name </th>
+                                     <th scope="col"> Surname</th>
+                                     <th scope="col"> Scientific field </th>
+                                </tr>
+                            </thead>
+                            <tbody> 
+                                <tr *ngFor="let t of magazine.editorList; let i = index">
+                                     <th scope="row"> {{i+1}} </th>
+                                     <td> {{t.name}}  </td> 
+                                     <td> {{t.surname}}</td> 
+                                     <td> {{t.scientific.name}}</td>
+                                 </tr>
+                                
+                            </tbody>
+                    </table>
+                    <p> Reviewers </p>
+                    <table class="table">
+                            <thead>
+                                <tr>
+                                     <th scope="col"> No. </th>
+                                     <th scope="col"> Name </th>
+                                     <th scope="col"> Surname</th>
+                                     <th scope="col"> Scientific field </th>
+                                </tr>
+                            </thead>
+                            <tbody> 
+                                <tr *ngFor="let t of magazine.reviewerList; let i = index">
+                                     <th scope="row"> {{i+1}} </th>
+                                     <td> {{t.name}}  </td> 
+                                     <td> {{t.surname}}</td> 
+                                     <td> {{t.scientific.name}}</td>
+                                 </tr>
+                                
+                            </tbody>
+                    </table>
                 </div>
             </div>
-            <form class="form-group" [formGroup]="inputEditorBoard" (ngSubmit)="onSubmit()">
+            <form class="form-group" [formGroup]="activateForm" (ngSubmit)="onSubmit()">
                 <div *ngFor="let field of formFields" >
                     <label for={{field.id}} *ngIf="field.type.name !='string' || field.id =='editors' || field.id=='reviewers'">{{field.label}}</label>
             
@@ -28,19 +68,12 @@
         
                     <input type="checkbox" formControlName={{field.id}}  ngModel class="form-control"  *ngIf="field.type.name=='boolean'">
                     <input type="number" formControlName={{field.id}} placeholder="{{field.label}}" ngModel class="form-control" *ngIf="field.type.name=='long'">
-                    <div *ngIf="field.id=='editors'">
-                        <p *ngFor="let e of editorList"> {{e.name}} {{e.surname}} </p>    
-                    </div>
                     <select multiple formControlName={{field.id}} *ngIf="field.id=='editors'" class="form-control">
                     <option *ngFor="let val of editors" value={{val.id}}>
                         
                         {{val.name}} {{val.surname}} - {{val.scientific.name}}
                     </option>
                     </select>
-                   <div *ngIf="field.id=='reviewers'"
-                   >
-                        <p *ngFor="let e of reviewerList"> {{e.name}} {{e.surname}} </p>    
-                    </div>
                     <select multiple formControlName={{field.id}} *ngIf="field.id=='reviewers'" class="form-control">
                         <option *ngFor="let val of reviewers" value={{val.id}}>
                             {{val.name}} {{val.surname}} - {{val.scientific.name}}
@@ -49,7 +82,7 @@
                 <br>
                 </div>
 
-                <button type="submit" class="btn btn-primary"> Register </button>
+                <button type="submit" class="btn btn-primary"> Activate magazine </button>
             </form>
         </div>
         <div></div>
