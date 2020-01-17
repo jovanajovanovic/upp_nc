@@ -1,9 +1,10 @@
 package com.upp.naucnacentrala.controller;
 
-import com.upp.naucnacentrala.dto.FormFieldsDto;
-import com.upp.naucnacentrala.dto.MagazineRegisterDto;
-import com.upp.naucnacentrala.dto.RegisterUserDto;
+import com.upp.naucnacentrala.dto.*;
+import com.upp.naucnacentrala.model.Editor;
 import com.upp.naucnacentrala.security.TokenUtils;
+import com.upp.naucnacentrala.services.EditorService;
+import com.upp.naucnacentrala.services.ReviewerService;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.form.FormField;
 import org.camunda.bpm.engine.form.TaskFormData;
@@ -38,6 +39,13 @@ public class MagazineController {
 
     @Autowired
     private TokenUtils tokenUtils;
+
+    @Autowired
+    private EditorService editorService;
+
+    @Autowired
+    private ReviewerService reviewerService;
+
 
     @GetMapping(path="/getAddMagazineForm", produces = "application/json")
     public @ResponseBody
@@ -94,8 +102,84 @@ public class MagazineController {
                     scientifics += ",";
             }
             map.put("scientific", scientifics);
+            //editors
+        String editors ="";
+        if(magazine.getEditors() != null) {
+            for (int i = 0; i < magazine.getEditors().size(); i++) {
+                editors += magazine.getEditors().get(i);
+                if (i != magazine.getEditors().size() - 1)
+                    editors += ",";
+            }
 
+        }
+        map.put("editors", editors);
+        //reviewers
+
+        String reviewers ="";
+        if(magazine.getReviewers() != null) {
+            for (int i = 0; i < magazine.getReviewers().size(); i++) {
+                reviewers += magazine.getReviewers().get(i);
+                if (i != magazine.getReviewers().size() - 1)
+                    reviewers += ",";
+            }
+        }
+        map.put("reviewers", reviewers);
             return map;
 
+    }
+
+    //metoda koja vraca magazin koji se unosi
+    @GetMapping(value = "/getMagazine/{taskId}", produces = "application/json")
+    public @ResponseBody ResponseEntity<MagazineRegisterDto> getMagazine(@PathVariable String taskId){
+        Task t = taskService.createTaskQuery().taskId(taskId).singleResult();
+        String processInstanceId = t.getProcessInstanceId();
+        MagazineRegisterDto magazine = (MagazineRegisterDto) runtimeService.getVariable(processInstanceId, "magazine");
+        return new ResponseEntity<MagazineRegisterDto>(magazine, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/getEditors", produces = "application/json")
+    public @ResponseBody ResponseEntity getEditors(@RequestBody List<String> scientifics){
+        System.out.println(">> get editors for scientifics => " + scientifics);
+        List<EditorReviewerDto> editors = this.editorService.getEditors(scientifics);
+        return new ResponseEntity(editors, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/getReviewers", produces = "application/json")
+    public @ResponseBody ResponseEntity getReviewers(@RequestBody List<String> scientifics){
+        System.out.println(">> get reviewers for scientifics => " + scientifics);
+        List<EditorReviewerDto> reviewers = this.reviewerService.getReviewers(scientifics);
+        return new ResponseEntity(reviewers, HttpStatus.OK);
+    }
+
+
+    @PostMapping(path = "/addEditBoard/{taskId}", produces = "application/json")
+    public @ResponseBody
+    ResponseEntity addEditBoard(@RequestBody EditBoardDto boardDto, @PathVariable String taskId, HttpServletRequest http){
+        System.out.println(">> ADD BOARD MAGAZINE: ");
+        System.out.println(boardDto);
+        HttpServletRequest httpServletRequest = (HttpServletRequest)http;
+        String authToken = httpServletRequest.getHeader("X-Auth-Token");
+        String username = this.tokenUtils.getUsernameFromToken(authToken);
+        System.out.println("Ulogovan korisnik je editor: " + username);
+
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        String processInstanceId = task.getProcessInstanceId();
+
+        MagazineRegisterDto magazine = (MagazineRegisterDto) runtimeService.getVariable(processInstanceId, "magazine");
+
+        magazine.setEditors(boardDto.getEditors());
+        magazine.setReviewers(boardDto.getReviewers());
+
+        HashMap<String, Object> map = this.mapListToDto(magazine);
+
+        runtimeService.setVariable(processInstanceId, "magazine", magazine);
+
+        try {
+            formService.submitTaskForm(taskId, map);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<> (HttpStatus.OK);
     }
 }

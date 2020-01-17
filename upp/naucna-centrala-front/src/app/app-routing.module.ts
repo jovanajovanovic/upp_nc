@@ -8,6 +8,7 @@ import { AcceptReviewerComponent } from './accept-reviewer/accept-reviewer.compo
 import { RoleGuardService } from './service/role-guard.service';
 import { ActivateUserComponent } from './user/activate-user/activate-user.component';
 import { RegisterMagazineComponent } from './magazine/register-magazine/register-magazine.component';
+import { InputEditorAndReviewerComponent } from './magazine/input-editor-and-reviewer/input-editor-and-reviewer.component';
 
 
 const routes: Routes = [
@@ -25,7 +26,7 @@ const routes: Routes = [
   component : ViewTaskComponent
 },
 {
-  path : 'verification reviewer/:id', 
+  path : 'verification/:id', 
   component : AcceptReviewerComponent
 }, 
 {
@@ -35,6 +36,10 @@ const routes: Routes = [
 {
   path : 'addMagazine', 
   component : RegisterMagazineComponent
+},
+{
+  path: 'add/:id',
+  component: InputEditorAndReviewerComponent
 }
 
 ];

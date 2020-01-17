@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Data
 @Entity
 public class Magazine {
     @Id
@@ -36,6 +35,9 @@ public class Magazine {
 
     @Column
     private boolean activate;
+
+    public Magazine() {
+    }
 
     public Magazine(String title, String issn, List<ScientificField> scientificField, Editor chiefEditor, Map<String, EditorBoard> editorBoards, Set<Reviewer> reviewers, MagazineType type, boolean activate) {
         this.title = title;

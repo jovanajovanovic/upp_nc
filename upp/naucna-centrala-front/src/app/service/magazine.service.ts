@@ -15,4 +15,22 @@ export class MagazineService {
   saveMagazine(dto, taskId){
     return this.httpClient.post<any>("/api/saveMagazine/".concat(taskId), dto, {headers: this.headers});
   }
+
+  getInputMagazine(taskId){
+    //OVA FUNKCIJA VRACA PODATKE O MAGAZINU KOJI SE UNOSI 
+    return this.httpClient.get<any>("/api/getMagazine/".concat(taskId));
+  }
+
+  getEditors(scientific){
+    //vracamo sve editore koji su za izabrane oblasti 
+    return this.httpClient.post<any>("/api/getEditors", scientific);
+  }
+  getReviewers(scientific){
+    //vracamo sve editore koji su za izabrane oblasti 
+    return this.httpClient.post<any>("/api/getReviewers", scientific);
+  }
+
+  addBoard(dto, taskId){
+    return this.httpClient.post<any>("/api/addEditBoard/".concat(taskId), dto, {headers: this.headers});
+  }
 }

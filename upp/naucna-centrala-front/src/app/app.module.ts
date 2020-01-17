@@ -15,6 +15,7 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { AcceptReviewerComponent } from './accept-reviewer/accept-reviewer.component';
 import { ActivateUserComponent } from './user/activate-user/activate-user.component';
 import { RegisterMagazineComponent } from './magazine/register-magazine/register-magazine.component';
+import { InputEditorAndReviewerComponent } from './magazine/input-editor-and-reviewer/input-editor-and-reviewer.component';
 
 
 
@@ -28,7 +29,8 @@ import { RegisterMagazineComponent } from './magazine/register-magazine/register
     ViewTaskComponent,
     AcceptReviewerComponent,
     ActivateUserComponent,
-    RegisterMagazineComponent
+    RegisterMagazineComponent,
+    InputEditorAndReviewerComponent
   ],
   imports: [
     BrowserModule,

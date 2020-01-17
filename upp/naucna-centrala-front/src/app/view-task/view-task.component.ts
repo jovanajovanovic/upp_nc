@@ -19,7 +19,8 @@ export class ViewTaskComponent implements OnInit {
 
   getTasks(){
     this.taskService.getMyTask().subscribe(
-      data => this.tasks = data
+      data => {this.tasks = data;
+      }
     )
   }
 

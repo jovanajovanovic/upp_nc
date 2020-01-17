@@ -12,13 +12,17 @@ public class MagazineRegisterDto implements Serializable {
     private String payment;
     private List<String> scientific;
     private String chiefEditor;
+    private List<String> editors;
+    private  List<String> reviewers;
 
-    public MagazineRegisterDto(String name, String issn, String payment, List<String> scientific, String chiefEditor) {
+    public MagazineRegisterDto(String name, String issn, String payment, List<String> scientific, String chiefEditor, List<String> editors, List<String> reviewers) {
         this.name = name;
         this.issn = issn;
         this.payment = payment;
         this.scientific = scientific;
         this.chiefEditor = chiefEditor;
+        this.editors = editors;
+        this.reviewers = reviewers;
     }
 
     public String getName() {
@@ -61,6 +65,22 @@ public class MagazineRegisterDto implements Serializable {
         this.chiefEditor = chiefEditor;
     }
 
+    public List<String> getEditors() {
+        return editors;
+    }
+
+    public void setEditors(List<String> editors) {
+        this.editors = editors;
+    }
+
+    public List<String> getReviewers() {
+        return reviewers;
+    }
+
+    public void setReviewers(List<String> reviewers) {
+        this.reviewers = reviewers;
+    }
+
     @Override
     public String toString() {
         return "MagazineRegisterDto{" +
@@ -69,6 +89,8 @@ public class MagazineRegisterDto implements Serializable {
                 ", payment='" + payment + '\'' +
                 ", scientific=" + scientific +
                 ", chiefEditor='" + chiefEditor + '\'' +
+                ", editors=" + editors +
+                ", reviewers=" + reviewers +
                 '}';
     }
 }
