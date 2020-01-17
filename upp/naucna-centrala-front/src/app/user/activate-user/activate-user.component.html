@@ -1,0 +1,26 @@
+
+<div class="container">
+    <div class="row"> 
+        <div class="col-2"></div>
+        <div class="col-6">
+            <!-- prvo cemo ispisati korisnika kojeg dobijemo -->
+           
+            <form class="form-group" [formGroup]="inputData" (ngSubmit)="onSubmit()">
+                <div *ngFor="let field of formFields" >
+                    <label for={{field.id}} *ngIf="field.type.name !='string'">{{field.label}}</label>
+            
+                    <input type="text" formControlName={{field.id}} placeholder="{{field.label}}" ngModel class="form-control" *ngIf="field.type.name=='string' && field.id != 'password'" >
+                    <input type="password" formControlName={{field.id}} placeholder="{{field.label}}" ngModel class="form-control" *ngIf="field.id=='password'" >
+        
+                    <input type="checkbox" formControlName={{field.id}}  ngModel class="form-control"  *ngIf="field.type.name=='boolean'">
+                    <input type="number" formControlName={{field.id}} placeholder="{{field.label}}" ngModel class="form-control" *ngIf="field.type.name=='long'">
+                  
+                <br>
+                </div>
+
+                <button type="submit" class="btn btn-primary"> Acctivate account </button>
+            </form>
+        </div>
+        <div></div>
+    </div>
+</div>
