@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
     alert('RUN REGISTRATION');
     // pozovemo funkciju za pocetak procesa registracije i prebacimo se na izlistavanje svih taskova
     this.regService.runRegistration().subscribe(
-      res => this.router.navigate(['/tasks'])
+      res =>  location.replace('http://localhost:4200/tasks')
     );
 
   }
@@ -42,14 +42,21 @@ export class HeaderComponent implements OnInit {
   addArticle() {
     alert('RUN PROCESS ADD ARTICLE');
     this.magazineService.startAddArticle().subscribe(
-      res => this.router.navigate(['/tasks'])
+      res =>{
+       // this.router.navigate(['/tasks']);
+      // location.reload();
+      location.replace('http://localhost:4200/tasks');      } 
     );
   }
 
   addMagazine() {
     alert('RUN ADD MAGAZINE PROCESS');
     this.magazineService.startAddMagazine().subscribe(
-      res => this.router.navigate(['/tasks'])
+      res => {
+        location.replace('http://localhost:4200/tasks');
+        
+
+      }
     );
   }
 

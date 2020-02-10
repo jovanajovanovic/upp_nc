@@ -18,18 +18,18 @@ public class Review implements Serializable {
 
     @ManyToOne
     @JoinColumn
-    private Reviewer reviewer;
+    private User reviewer;
 
     public Review() {
     }
 
-    public Review(String comment, Article article, Reviewer reviewer) {
+    public Review(String comment, Article article, User reviewer) {
         this.comment = comment;
         this.article = article;
         this.reviewer = reviewer;
     }
 
-    public Review(Long id, String comment, Article article, Reviewer reviewer) {
+    public Review(Long id, String comment, Article article, User reviewer) {
         this.comment = comment;
         this.article = article;
         this.reviewer = reviewer;
@@ -60,11 +60,11 @@ public class Review implements Serializable {
         this.article = article;
     }
 
-    public Reviewer getReviewer() {
+    public User getReviewer() {
         return reviewer;
     }
 
-    public void setReviewer(Reviewer reviewer) {
+    public void setReviewer(User reviewer) {
         this.reviewer = reviewer;
     }
 
@@ -75,7 +75,7 @@ public class Review implements Serializable {
                 "id=" + id +
                 ", comment='" + comment + '\'' +
                 ", article=" + article +
-                ", reviewer=" + reviewer +
+                ", reviewer=" + reviewer.getName() +
                 '}';
     }
 }

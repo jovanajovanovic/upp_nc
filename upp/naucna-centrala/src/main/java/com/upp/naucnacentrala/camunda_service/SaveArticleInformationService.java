@@ -27,6 +27,7 @@ public class SaveArticleInformationService implements JavaDelegate {
         String apstract = (String) delegateExecution.getVariable("apstract");
         String key_word = (String)delegateExecution.getVariable("key_word");
         String pdf = (String)delegateExecution.getVariable("pdf");
+        byte[] file = (byte[]) delegateExecution.getVariable("file");
 
         Author a = (Author) delegateExecution.getVariable("author");
         Magazine m = (Magazine) delegateExecution.getVariable("select_magazine");
@@ -35,6 +36,7 @@ public class SaveArticleInformationService implements JavaDelegate {
 
         Article newArticle = new Article(title, apstract, key_word, sf, a, m, pdf, false);
       //  articleRepository.save(newArticle);
+        newArticle.setFile(file);
         newArticle.setReject(false);
 
         delegateExecution.setVariable("article", newArticle);

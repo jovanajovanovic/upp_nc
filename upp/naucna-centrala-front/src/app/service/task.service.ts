@@ -25,4 +25,13 @@ export class TaskService {
   getActivateTask(processId) : Observable<any> {
     return this.httpClient.get<any>("api/activateTask/".concat(processId));
   } 
+
+
+  uploadFile(taskId, data):Observable<any>{
+    return this.httpClient.post<any>('api/upload/'.concat(taskId), data) as Observable<any>;
+  }
+
+  downloadFile(article):Observable<any> {
+    return this.httpClient.get<Blob>('api/download/'.concat(article), {headers: this.headers, responseType: 'blob' as 'json'});
+  }
 }

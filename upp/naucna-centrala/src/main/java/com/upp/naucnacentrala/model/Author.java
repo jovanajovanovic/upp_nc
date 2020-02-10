@@ -17,6 +17,10 @@ public class Author extends User {
     public Author() {
     }
 
+    public Author(String name, String surname, String username, String password, String city, String country, String email, String title, boolean activate, Role role, String code) {
+        super(name, surname, username, password, city, country, email, title, activate, role, code);
+    }
+
     public Author(Set<Article> articles) {
         this.articles = articles;
     }

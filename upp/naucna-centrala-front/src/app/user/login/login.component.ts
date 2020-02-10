@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
           location.replace('http://localhost:4200/tasks');
           alert('Successful login!');
         },
-        error => {
+        err => {
           alert('Wrong username or password!');
         }
       );

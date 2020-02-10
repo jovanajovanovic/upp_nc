@@ -11,7 +11,8 @@
                             
 
                             <th *ngIf="o.list == false"> {{o.name}} </th>
-                            <td *ngIf="o.list == false; else printList"> {{o.value}}</td>
+                            <td *ngIf="o.list == false ; else printList"> {{o.value}}</td>
+                           
                             <ng-template #printList> 
                                 <table> 
                                     <tr *ngFor="let i of o.value">
@@ -30,7 +31,12 @@
 
                     <input type="text" formControlName={{field.id}} placeholder="{{field.label}}" ngModel
                         class="form-control"
-                        *ngIf="field.type.name=='string' && field.id != 'password' && field.id != 'scientific'">
+                        *ngIf="field.type.name=='string' && field.id != 'password' && field.id != 'pdf'">
+                        <!--upload file; treba jos neke stvari dodati -->
+                    <input type="file" formControlName={{field.id}} placeholder="{{field.label}}" ngModel
+                    class="form-control" (change)="uploadFile($event.target.files)"
+                        *ngIf="field.type.name=='string' && field.id != 'password' && field.id == 'pdf'">
+
                     <input type="password" formControlName={{field.id}} placeholder="{{field.label}}" ngModel
                         class="form-control" *ngIf="field.id=='password'">
 
@@ -38,7 +44,8 @@
                         *ngIf="field.type.name=='boolean'">
                     <input type="number" formControlName={{field.id}} placeholder="{{field.label}}" ngModel
                         class="form-control" *ngIf="field.type.name=='long'">
-                    <select multiple formControlName={{field.id}} *ngIf="field.type.name=='multiselect' && field.id === 'scientific'"
+
+                    <select multiple formControlName={{field.id}} *ngIf="field.type.name=='multiselect'"
                         class="form-control">
                         <option *ngFor="let val of scientificFields" value={{val}}>
                             {{field.type.values[val]}}

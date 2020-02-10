@@ -39,7 +39,7 @@ public class ProcessingSelectedMagazineService implements JavaDelegate {
         Author author = authorRepository.findByUsername(author_username);
         delegateExecution.setVariable("author", author);
         delegateExecution.setVariable("select_magazine", m);
-
+        delegateExecution.setVariable("magazine_view", m.getTitle());
         //pronadjemo naucne oblasti od casopisa
         List<ScientificField> scientifics  = m.getScientificField();
         System.out.println("SCIENTIFIC FIELDS");

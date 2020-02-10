@@ -24,21 +24,16 @@ public class ChangeArticleService implements JavaDelegate {
         System.out.println("IZMENE CLANKA");
         Article a = (Article)delegateExecution.getVariable("article"); //clanak koji se menja
 
-        String newTitle = (String)delegateExecution.getVariable("title");
-        String newApstract = (String)delegateExecution.getVariable("apstract");
-        String newScientific = (String)delegateExecution.getVariable("scientific_new");
-        String newKeyWords = (String)delegateExecution.getVariable("key_word");
-        String newPdf = (String)delegateExecution.getVariable("pdf");
+        String newPdf = (String)delegateExecution.getVariable("new_pdf1");
         System.out.println("STARI CLANAK :" + a.getTitle() + " " + a.getMagazine().getTitle());
+        delegateExecution.setVariable("pdf", newPdf);
 
-        ScientificField newSf = scientificRepository.findByCode(newScientific).orElseThrow(() -> new ObjectNotFound("Scientific field with code " + newScientific + " does not exist"));
+//        ScientificField newSf = scientificRepository.findByCode(newScientific).orElseThrow(() -> new ObjectNotFound("Scientific field with code " + newScientific + " does not exist"));
         Article changeArticle = articleRepository.findByTitleAndMagazine(a.getTitle(), a.getMagazine());
         System.out.println("STARI CLANAK " + changeArticle.getTitle());
-        changeArticle.setTitle(newTitle);
-        changeArticle.setApstract(newApstract);
-        changeArticle.setKeyWords(newKeyWords);
+        byte[] file = (byte[]) delegateExecution.getVariable("file");
+        changeArticle.setFile(file);
         changeArticle.setPdf(newPdf);
-        changeArticle.setScientific(newSf);
         System.out.println("NOVI CLANAK " + changeArticle.getTitle());
         articleRepository.save(changeArticle);
         delegateExecution.setVariable("article", changeArticle);
@@ -51,7 +46,7 @@ public class ChangeArticleService implements JavaDelegate {
         System.out.println("TIP PROMENA: " + bigChanges);
         delegateExecution.setVariable("bigChanges", bigChanges);
 
-        delegateExecution.setVariable("select_scientific", newSf.getName());
+//        delegateExecution.setVariable("select_scientific", newSf.getName());
 
 
     }

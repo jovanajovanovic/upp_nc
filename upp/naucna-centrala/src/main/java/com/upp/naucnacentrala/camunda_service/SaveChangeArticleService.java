@@ -25,20 +25,16 @@ public class SaveChangeArticleService implements JavaDelegate {
         System.out.println("IZMENA CLANKA");
         Article a = (Article)delegateExecution.getVariable("article"); //clanak koji se menja
 
-        String newTitle = (String)delegateExecution.getVariable("title");
-        String newApstract = (String)delegateExecution.getVariable("apstract");
-        String newScientific = (String)delegateExecution.getVariable("scientific_new");
-        String newKeyWords = (String)delegateExecution.getVariable("key_word");
-        String newPdf = (String)delegateExecution.getVariable("pdf");
-
-        ScientificField newSf = scientificRepository.findByCode(newScientific).orElseThrow(() -> new ObjectNotFound("Scientific field with code " + newScientific + " does not exist"));
+        String newPdf = (String)delegateExecution.getVariable("new_pdf");
+        delegateExecution.setVariable("pdf", newPdf);
+//        ScientificField newSf = scientificRepository.findByCode(newScientific).orElseThrow(() -> new ObjectNotFound("Scientific field with code " + newScientific + " does not exist"));
         Article changeArticle = articleRepository.findByTitleAndMagazine(a.getTitle(), a.getMagazine());
         System.out.println("STARI CLANAK " + changeArticle.getTitle());
-        changeArticle.setTitle(newTitle);
-        changeArticle.setApstract(newApstract);
-        changeArticle.setKeyWords(newKeyWords);
+        byte[] file = (byte[]) delegateExecution.getVariable("file");
+        changeArticle.setFile(file);
         changeArticle.setPdf(newPdf);
-        changeArticle.setScientific(newSf);
+//        changeArticle.setScientific(newSf);
+        System.out.println("NOVI PDF: " + changeArticle.getPdf());
         System.out.println("NOVI CLANAK " + changeArticle.getTitle());
         articleRepository.save(changeArticle);
         delegateExecution.setVariable("article", changeArticle);

@@ -100,4 +100,43 @@ export class TaskComponent implements OnInit {
     )
   }
 
+  uploadFile(files: File[]){
+    alert("Upload fajla " + files);
+  //  let fileList: FileList = this.regUserForm.value.pdf;
+  //  alert(fileList);
+    let file = files[0];
+    let formData = new FormData();
+    formData.append('file', file, file.name);
+
+    this.taskService.uploadFile(this.processId, formData).subscribe(
+      data => {
+
+      }, 
+      err => {
+        console.log(err.error);
+
+      }
+    );
+  }
+
+  downloadFile(){
+    var article = '';
+    for (let ob of this.object){
+      if (ob.name == 'Title'){
+        article = ob.value;
+      }
+    }
+    alert("Download " + JSON.stringify(this.object));
+    this.taskService.downloadFile(article).subscribe(
+      (data: Blob) => {
+        var file = new Blob([data], {type: 'applicattion/pdf'});
+        var fileUrl = URL.createObjectURL(file);
+
+        window.open(fileUrl);
+    }, error=>{
+        console.log('ERROR DOWNLOADING THE FILE');
+    }
+    );
+  }
+
 }

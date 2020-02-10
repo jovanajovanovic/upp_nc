@@ -34,7 +34,7 @@ public class SendNotificationToScieEditor implements JavaDelegate {
         mailMessage.setSubject("Notification");
         mailMessage.setText("Dear Mr./Ms. " + u.getName() + " " + u.getSurname() + ", \n" +
                 " The author " + a.getAuthor().getName() + "  " + a.getAuthor().getSurname() + " has added a new article " + a.getTitle() + " to the magazine " + a.getMagazine().getTitle() + ".");
-        javaMailSender.send(mailMessage);
+       // javaMailSender.send(mailMessage);
     }
 
 }

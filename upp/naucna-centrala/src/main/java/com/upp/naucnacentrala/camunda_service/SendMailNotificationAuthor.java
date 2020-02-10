@@ -29,7 +29,7 @@ public class SendMailNotificationAuthor implements JavaDelegate {
         System.out.println("SLANJE MEJLA AUTORU O POTREBNIM IZMENAMA ");
 
         Article a = (Article)delegateExecution.getVariable("article");
-        System.out.println(a);
+        System.out.println(a.getTitle());
 
         Article article = articleRepository.findByTitleAndMagazine(a.getTitle(), a.getMagazine());
 

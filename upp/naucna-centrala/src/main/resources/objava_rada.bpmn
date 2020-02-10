@@ -152,6 +152,11 @@ if(formFields!=null){
               <camunda:constraint name="readonly" />
             </camunda:validation>
           </camunda:formField>
+          <camunda:formField id="pdf_view" label="Pdf" type="string" defaultValue="${pdf}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1whmvfd</bpmn:incoming>
@@ -267,11 +272,31 @@ if(formFields!=null){
     <bpmn:userTask id="Task_02360ep" name="author change article" camunda:assignee="${starter}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="title" label="Title" type="string" defaultValue="${title}" />
-          <camunda:formField id="scientific_new" label="Scientific" type="enum" />
-          <camunda:formField id="apstract" label="Apstract" type="string" defaultValue="${apstract}" />
-          <camunda:formField id="key_word" label="Key words" type="string" defaultValue="${key_word}" />
-          <camunda:formField id="pdf" label="Pdf" type="string" defaultValue="${pdf}" />
+          <camunda:formField id="title" label="Title" type="string" defaultValue="${title}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="scientific_view" label="Scientific" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="apstract" label="Apstract" type="string" defaultValue="${apstract}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="key_word" label="Key words" type="string" defaultValue="${key_word}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="new_pdf1" label="Pdf" type="string" defaultValue="${article.getPdf()}">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
           <camunda:formField id="message" label="Comment " type="string" />
           <camunda:formField id="all_comments_view" label="Comments" type="string" defaultValue="${all_comments}">
             <camunda:validation>
@@ -279,22 +304,6 @@ if(formFields!=null){
             </camunda:validation>
           </camunda:formField>
         </camunda:formData>
-        <camunda:taskListener event="create">
-          <camunda:script scriptFormat="Groovy">taskFormData = task.getExecution().getProcessEngineServices().getFormService().getTaskFormData(task.getId());
-scientifics = task.getExecution().getVariable("scientifics");
-formFields = taskFormData. getFormFields();
-if(formFields!=null){
-   for(field in formFields){
-       if( field.getId() == "scientific_new"){
-           //ovo je nase select polje
-           items = field.getType().getValues();
-           for(s in scientifics){
-               items.put(s.getCode(),s.getName());
-           }
-       }
-   }
-}</camunda:script>
-        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_16s8oql</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0vocj95</bpmn:outgoing>
@@ -427,7 +436,7 @@ if(formFields!=null){
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0prfcfn</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_08y3fdk</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1ow50aj</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="Task_1dc510k" name="notification author " camunda:class="com.upp.naucnacentrala.camunda_service.SendMailNotificationAuthor">
       <bpmn:incoming>SequenceFlow_0frtc1b</bpmn:incoming>
@@ -475,9 +484,9 @@ if(formFields!=null){
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1c6pc10" sourceRef="Task_1rkas0u" targetRef="ExclusiveGateway_0m92f8f" />
     <bpmn:subProcess id="SubProcess_0fr5lab">
-      <bpmn:incoming>SequenceFlow_0eujf8w</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1ow50aj</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_065e7ug</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${selectReviewers}" camunda:elementVariable="recenzent" />
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${reviews}" camunda:elementVariable="review" />
       <bpmn:startEvent id="StartEvent_0xj6l6f">
         <bpmn:outgoing>SequenceFlow_02f7fhm</bpmn:outgoing>
       </bpmn:startEvent>
@@ -506,6 +515,11 @@ if(formFields!=null){
               </camunda:validation>
             </camunda:formField>
             <camunda:formField id="author_view" label="Author" type="string" defaultValue="${author.getName()}">
+              <camunda:validation>
+                <camunda:constraint name="readonly" />
+              </camunda:validation>
+            </camunda:formField>
+            <camunda:formField id="pdf_v" label="Pdf" type="string" defaultValue="${pdf}">
               <camunda:validation>
                 <camunda:constraint name="readonly" />
               </camunda:validation>
@@ -563,7 +577,7 @@ if(formFields!=null){
         <bpmn:incoming>SequenceFlow_0ankzgw</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_19jj4i9</bpmn:outgoing>
       </bpmn:userTask>
-      <bpmn:serviceTask id="Task_0x2pyp6" name="set first reviewer" camunda:expression="#{recenzent}" camunda:resultVariable="izvrsilac">
+      <bpmn:serviceTask id="Task_0x2pyp6" name="set first reviewer" camunda:expression="#{review.getReviewer().getUsername()}" camunda:resultVariable="izvrsilac">
         <bpmn:incoming>SequenceFlow_02f7fhm</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_19ofrbd</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -573,7 +587,7 @@ if(formFields!=null){
         <bpmn:incoming>SequenceFlow_1930pkh</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="SequenceFlow_079jk8l" sourceRef="Task_0c8x9yy" targetRef="ExclusiveGateway_1ln13um" />
-      <bpmn:serviceTask id="Task_0c8x9yy" name="set new reviewer" camunda:expression="#{reviewer}" camunda:resultVariable="izvrsilac">
+      <bpmn:serviceTask id="Task_0c8x9yy" name="set new reviewer" camunda:class="com.upp.naucnacentrala.camunda_service.SetNewReviewerService">
         <bpmn:incoming>SequenceFlow_1hzwmxw</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_079jk8l</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -595,7 +609,6 @@ if(formFields!=null){
         <bpmn:outgoing>SequenceFlow_1hzwmxw</bpmn:outgoing>
       </bpmn:userTask>
     </bpmn:subProcess>
-    <bpmn:sequenceFlow id="SequenceFlow_08y3fdk" sourceRef="Task_0rt2i77" targetRef="ExclusiveGateway_08ahw92" />
     <bpmn:sequenceFlow id="SequenceFlow_065e7ug" sourceRef="SubProcess_0fr5lab" targetRef="Task_1xktnpp" />
     <bpmn:sequenceFlow id="SequenceFlow_19pdt4m" name="no" sourceRef="ExclusiveGateway_1p93kq1" targetRef="ExclusiveGateway_0jyxnmf">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${change==false}</bpmn:conditionExpression>
@@ -665,6 +678,11 @@ if(formFields!=null){
           <camunda:formField id="typeChange" label="Type of change" type="enum">
             <camunda:value id="big_change" name="big change" />
             <camunda:value id="small_change" name="small change" />
+          </camunda:formField>
+          <camunda:formField id="title" label="Title" type="string" defaultValue="${title}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
           </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
@@ -736,15 +754,14 @@ if(formFields!=null){
     <bpmn:sequenceFlow id="SequenceFlow_11ygyr5" sourceRef="SubProcess_1mtlu0z" targetRef="Task_0m3v208" />
     <bpmn:sequenceFlow id="SequenceFlow_04rfwhq" sourceRef="Task_14wixg6" targetRef="ExclusiveGateway_03oydcf" />
     <bpmn:serviceTask id="Task_0k4nyzk" name="save choice reviewers" camunda:class="com.upp.naucnacentrala.camunda_service.SaveChoiceReviewersService">
-      <bpmn:incoming>SequenceFlow_18bnlb1</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1cafoc4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0prfcfn</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="ExclusiveGateway_08ahw92">
       <bpmn:incoming>SequenceFlow_14rodxn</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_08y3fdk</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0eujf8w</bpmn:outgoing>
+      <bpmn:incoming>SequenceFlow_0ob4f2z</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1cafoc4</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0eujf8w" sourceRef="ExclusiveGateway_08ahw92" targetRef="SubProcess_0fr5lab" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_0m92f8f" name="reviewers?">
       <bpmn:incoming>SequenceFlow_1c6pc10</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1c79z4u</bpmn:outgoing>
@@ -756,12 +773,11 @@ if(formFields!=null){
     <bpmn:exclusiveGateway id="ExclusiveGateway_03oydcf">
       <bpmn:incoming>SequenceFlow_06m8rt1</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_04rfwhq</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_18bnlb1</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0ob4f2z</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_06m8rt1" name="no" sourceRef="ExclusiveGateway_0m92f8f" targetRef="ExclusiveGateway_03oydcf">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${reviewers==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_18bnlb1" sourceRef="ExclusiveGateway_03oydcf" targetRef="Task_0k4nyzk" />
     <bpmn:sequenceFlow id="SequenceFlow_0prfcfn" sourceRef="Task_0k4nyzk" targetRef="Task_0rt2i77" />
     <bpmn:userTask id="UserTask_0gk5ajm" name="editor accept article" camunda:assignee="${sci_editor}">
       <bpmn:extensionElements>
@@ -787,6 +803,11 @@ if(formFields!=null){
             </camunda:validation>
           </camunda:formField>
           <camunda:formField id="accept_article" label="Accept article" type="boolean" />
+          <camunda:formField id="pdf_view" label="Pdf" type="string" defaultValue="${pdf}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_13azp8u</bpmn:incoming>
@@ -815,11 +836,31 @@ if(formFields!=null){
     <bpmn:userTask id="UserTask_1m4zt8w" name="author change article" camunda:assignee="${starter}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="title" label="Title" type="string" defaultValue="${title}" />
-          <camunda:formField id="scientific_new" label="Scientific" type="enum" />
-          <camunda:formField id="apstract" label="Apstract" type="string" defaultValue="${apstract}" />
-          <camunda:formField id="key_word" label="Key words" type="string" defaultValue="${key_word}" />
-          <camunda:formField id="pdf" label="Pdf" type="string" defaultValue="${pdf}" />
+          <camunda:formField id="title" label="Title" type="string" defaultValue="${title}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="scientific_view" label="Scientific" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="apstract" label="Apstract" type="string" defaultValue="${article.getApstract()}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="key_word" label="Key words" type="string" defaultValue="${key_word}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="new_pdf1" label="Pdf" type="string" defaultValue="${article.getPdf()}">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
           <camunda:formField id="message" label="Comment " type="string" />
         </camunda:formData>
         <camunda:taskListener event="create">
@@ -859,28 +900,32 @@ if(formFields!=null){
     <bpmn:userTask id="UserTask_0w9bseb" name="author change article" camunda:assignee="${starter}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="title" label="Title" type="string" defaultValue="${title}" />
-          <camunda:formField id="scientific" label="Scientific" type="enum" />
-          <camunda:formField id="apstract" label="Apstract" type="string" defaultValue="${apstract}" />
-          <camunda:formField id="key_word" label="Key words" type="string" defaultValue="${key_word}" />
-          <camunda:formField id="pdf" label="Pdf" type="string" defaultValue="${pdf}" />
+          <camunda:formField id="title" label="Title" type="string" defaultValue="${title}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="scientific_view" label="Scientific" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="apstract" label="Apstract" type="string" defaultValue="${apstract}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="key_word" label="Key words" type="string" defaultValue="${key_word}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="new_pdf" label="Pdf" type="string" defaultValue="${pdf}">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
-        <camunda:taskListener event="create">
-          <camunda:script scriptFormat="Groovy">taskFormData = task.getExecution().getProcessEngineServices().getFormService().getTaskFormData(task.getId());
-scientifics = task.getExecution().getVariable("scientifics");
-formFields = taskFormData. getFormFields();
-if(formFields!=null){
-   for(field in formFields){
-       if( field.getId() == "scientific_new"){
-           //ovo je nase select polje
-           items = field.getType().getValues();
-           for(s in scientifics){
-               items.put(s.getCode(),s.getName());
-           }
-       }
-   }
-}</camunda:script>
-        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0bng8b3</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_03ddu0p</bpmn:outgoing>
@@ -901,6 +946,9 @@ if(formFields!=null){
       <bpmn:incoming>SequenceFlow_03ddu0p</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0h40vac</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1ow50aj" sourceRef="Task_0rt2i77" targetRef="SubProcess_0fr5lab" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ob4f2z" sourceRef="ExclusiveGateway_03oydcf" targetRef="ExclusiveGateway_08ahw92" />
+    <bpmn:sequenceFlow id="SequenceFlow_1cafoc4" sourceRef="ExclusiveGateway_08ahw92" targetRef="Task_0k4nyzk" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="objava_rada">
@@ -1234,7 +1282,7 @@ if(formFields!=null){
         <di:waypoint x="1550" y="2322" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_0xewa90_di" bpmnElement="Task_0rt2i77" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
-        <dc:Bounds x="640" y="1030" width="100" height="80" />
+        <dc:Bounds x="490" y="1010" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_158ectv_di" bpmnElement="Task_1dc510k" bioc:stroke="rgb(251, 140, 0)" bioc:fill="rgb(255, 224, 178)">
         <dc:Bounds x="1490" y="1390" width="100" height="80" />
@@ -1284,10 +1332,6 @@ if(formFields!=null){
       <bpmndi:BPMNEdge id="SequenceFlow_0z9lkcj_di" bpmnElement="SequenceFlow_0z9lkcj">
         <di:waypoint x="886" y="1360" />
         <di:waypoint x="950" y="1360" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_08y3fdk_di" bpmnElement="SequenceFlow_08y3fdk">
-        <di:waypoint x="640" y="1070" />
-        <di:waypoint x="575" y="1070" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_065e7ug_di" bpmnElement="SequenceFlow_065e7ug">
         <di:waypoint x="1450" y="1140" />
@@ -1357,10 +1401,10 @@ if(formFields!=null){
       <bpmndi:BPMNEdge id="SequenceFlow_14rodxn_di" bpmnElement="SequenceFlow_14rodxn">
         <di:waypoint x="1515" y="1960" />
         <di:waypoint x="340" y="1960" />
-        <di:waypoint x="340" y="1070" />
-        <di:waypoint x="525" y="1070" />
+        <di:waypoint x="340" y="970" />
+        <di:waypoint x="715" y="970" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="343" y="1522" width="55" height="14" />
+          <dc:Bounds x="343" y="1474" width="55" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0g4x06w_di" bpmnElement="SequenceFlow_0g4x06w">
@@ -1497,15 +1541,11 @@ if(formFields!=null){
         <di:waypoint x="925" y="960" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1hq5oms_di" bpmnElement="Task_0k4nyzk" bioc:stroke="rgb(251, 140, 0)" bioc:fill="rgb(255, 224, 178)">
-        <dc:Bounds x="900" y="1030" width="100" height="80" />
+        <dc:Bounds x="690" y="1010" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_08ahw92_di" bpmnElement="ExclusiveGateway_08ahw92" isMarkerVisible="true">
-        <dc:Bounds x="525" y="1045" width="50" height="50" />
+        <dc:Bounds x="715" y="945" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0eujf8w_di" bpmnElement="SequenceFlow_0eujf8w">
-        <di:waypoint x="550" y="1095" />
-        <di:waypoint x="550" y="1120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_0m92f8f_di" bpmnElement="ExclusiveGateway_0m92f8f" isMarkerVisible="true">
         <dc:Bounds x="1055" y="855" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -1530,13 +1570,9 @@ if(formFields!=null){
           <dc:Bounds x="1089" y="930" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_18bnlb1_di" bpmnElement="SequenceFlow_18bnlb1">
-        <di:waypoint x="950" y="985" />
-        <di:waypoint x="950" y="1030" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0prfcfn_di" bpmnElement="SequenceFlow_0prfcfn">
-        <di:waypoint x="900" y="1070" />
-        <di:waypoint x="740" y="1070" />
+        <di:waypoint x="690" y="1050" />
+        <di:waypoint x="590" y="1050" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_0gk5ajm_di" bpmnElement="UserTask_0gk5ajm" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
         <dc:Bounds x="1650" y="1750" width="100" height="80" />
@@ -1645,6 +1681,21 @@ if(formFields!=null){
       <bpmndi:BPMNShape id="ServiceTask_00ax8x8_di" bpmnElement="Task_0oaaaop" bioc:stroke="rgb(251, 140, 0)" bioc:fill="rgb(255, 224, 178)">
         <dc:Bounds x="2160" y="545" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ow50aj_di" bpmnElement="SequenceFlow_1ow50aj">
+        <di:waypoint x="540" y="1090" />
+        <di:waypoint x="540" y="1120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ob4f2z_di" bpmnElement="SequenceFlow_0ob4f2z">
+        <di:waypoint x="950" y="985" />
+        <di:waypoint x="950" y="1030" />
+        <di:waypoint x="845" y="1030" />
+        <di:waypoint x="845" y="970" />
+        <di:waypoint x="765" y="970" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1cafoc4_di" bpmnElement="SequenceFlow_1cafoc4">
+        <di:waypoint x="740" y="995" />
+        <di:waypoint x="740" y="1010" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

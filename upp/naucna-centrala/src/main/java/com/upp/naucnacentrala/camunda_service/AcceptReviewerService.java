@@ -2,10 +2,8 @@ package com.upp.naucnacentrala.camunda_service;
 
 import com.upp.naucnacentrala.dto.InputDataDto;
 import com.upp.naucnacentrala.exceptions.ObjectNotFound;
-import com.upp.naucnacentrala.model.Reviewer;
-import com.upp.naucnacentrala.model.Role;
-import com.upp.naucnacentrala.model.ScientificField;
-import com.upp.naucnacentrala.model.User;
+import com.upp.naucnacentrala.model.*;
+import com.upp.naucnacentrala.repository.AuthorRepository;
 import com.upp.naucnacentrala.repository.ReviewerRepository;
 import com.upp.naucnacentrala.repository.ScientificRepository;
 import com.upp.naucnacentrala.repository.UserRepository;
@@ -29,12 +27,13 @@ public class AcceptReviewerService implements JavaDelegate {
     @Autowired
     private ScientificRepository scientificRepository;
 
+
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         System.out.println(">> PROMENA STATUSA KORISNIKA - SERVISNI TASK");
 
         String registration = (String) execution.getVariable("username");
-        List<String> scientific = (List<String>) execution.getVariable("scientific");
+        List<String> scientific = (List<String>) execution.getVariable("select_scientific");
         System.out.println(registration);
 
         boolean activate = (boolean) execution.getVariable("status");

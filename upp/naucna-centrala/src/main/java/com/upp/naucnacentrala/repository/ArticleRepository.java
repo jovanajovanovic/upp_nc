@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface ArticleRepository extends CrudRepository<Article, Long> {
 
     Article findByTitleAndMagazine(String title, Magazine m);
+
+    Article findByTitle(String title);
 }

@@ -60,7 +60,7 @@
               <camunda:constraint name="readonly" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="r_scientific" label="Scientific fields" type="string" defaultValue="${scientific}">
+          <camunda:formField id="r_scientific" label="Scientific fields" type="multiselect" defaultValue="${select_scientific}">
             <camunda:validation>
               <camunda:constraint name="readonly" />
             </camunda:validation>
@@ -122,7 +122,7 @@
               <camunda:constraint name="required" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="scientific" label="Scientific fields" type="multiselect">
+          <camunda:formField id="select_scientific" label="Scientific fields" type="multiselect">
             <camunda:validation>
               <camunda:constraint name="required" />
             </camunda:validation>
@@ -135,7 +135,7 @@ scientifics = task.getExecution().getVariable("scientifics");
 formFields = taskFormData. getFormFields();
 if(formFields!=null){
    for(field in formFields){
-       if( field.getId() == "scientific"){
+       if( field.getId() == "select_scientific"){
            //ovo je nase select polje
            items = field.getType().getValues();
            for(s in scientifics){

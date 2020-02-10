@@ -3,7 +3,9 @@ package com.upp.naucnacentrala.camunda_service;
 
 import com.upp.naucnacentrala.dto.InputDataDto;
 import com.upp.naucnacentrala.exceptions.UserAlreadyExistsException;
+import com.upp.naucnacentrala.model.Author;
 import com.upp.naucnacentrala.model.Role;
+import com.upp.naucnacentrala.repository.AuthorRepository;
 import com.upp.naucnacentrala.repository.UserRepository;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -26,6 +28,9 @@ public class RegistrationService implements JavaDelegate {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthorRepository authorRepository;
 
 
     @Override
@@ -57,9 +62,18 @@ public class RegistrationService implements JavaDelegate {
             //istog usera sacuvamo i kod nas u tabeli
             //ivucemo sve naucne oblasti
 
-            com.upp.naucnacentrala.model.User user = new com.upp.naucnacentrala.model.User(name, surname, username, passwordEncoder.encode(password),
-            city, country, email, title, false, Role.AUTHOR, "");
-            userRepository.save(user);
+
+
+            if (reviewer==true){
+                com.upp.naucnacentrala.model.User user = new com.upp.naucnacentrala.model.User(name, surname, username, passwordEncoder.encode(password),
+                    city, country, email, title, false, Role.READER, "");
+                userRepository.save(user);
+            }else {
+                Author a =  new Author(name, surname, username, passwordEncoder.encode(password),
+                        city, country, email, title, false, Role.AUTHOR, "");
+                authorRepository.save(a);
+            }
+
             execution.setVariable("verification", true);
 
         } else {

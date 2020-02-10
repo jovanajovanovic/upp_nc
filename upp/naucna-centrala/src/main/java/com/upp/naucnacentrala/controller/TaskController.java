@@ -4,6 +4,7 @@ package com.upp.naucnacentrala.controller;
 import com.upp.naucnacentrala.dto.FormFieldsDto;
 import com.upp.naucnacentrala.dto.InputDataDto;
 import com.upp.naucnacentrala.exceptions.ObjectNotFound;
+import com.upp.naucnacentrala.services.ArticleService;
 import com.upp.naucnacentrala.services.EditorService;
 import com.upp.naucnacentrala.services.ReviewerService;
 import com.upp.naucnacentrala.services.ScientificService;
@@ -14,14 +15,17 @@ import org.camunda.bpm.engine.form.TaskFormData;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.dmn.instance.InformationItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.Media;
+import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +57,9 @@ public class TaskController {
     @Autowired
     private EditorService editorService;
 
+    @Autowired
+    private ArticleService articleService;
+
     @GetMapping(path="/task/getForm/{taskId}", produces = "application/json")
     public @ResponseBody FormFieldsDto getFrom(@PathVariable String taskId) throws ObjectNotFound {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -81,8 +88,10 @@ public class TaskController {
         for (FormField fp : fieldReadonly) {
             System.out.println("Polje " + fp.getLabel() + " je readonly");
             //   Object value = fp.getValue().getValue();
+            System.out.println(fp.getTypeName());
             if (fp.getTypeName().equals("multiselect")){
                 //uzmem i izvucem vrednosti iz baze
+                System.out.println("Tip polja je multiselect");
                 List<String> values = scientificService.getScientificFields(fp.getValue().getValue());
                 readonlyFields.add(new InputDataDto(fp.getLabel(), values, true));
             }else if (fp.getTypeName().equals("multiselectE")){
@@ -92,6 +101,7 @@ public class TaskController {
                 List<String> values = reviewerService.getReviewersByCode(fp.getValue().getValue());
                 readonlyFields.add(new InputDataDto(fp.getLabel(), values, true));
             }else if (fp.getId().equals("scientific")){
+                System.out.println("Polje je string i scientific");
                 String values = scientificService.getScientificField(fp.getValue().getValue());
                 readonlyFields.add(new InputDataDto(fp.getLabel(), values, false));
             }
@@ -102,6 +112,33 @@ public class TaskController {
         }
 
         return new FormFieldsDto(task.getId(), task.getProcessInstanceId(), properties, readonlyFields);
+
+    }
+
+
+    @PostMapping(value = "/upload/{taskId}")
+    public ResponseEntity fileUpload(@RequestParam("file")MultipartFile file, @PathVariable String taskId){
+        try{
+            Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+            String processInstance = task.getProcessInstanceId();
+            runtimeService.setVariable(processInstance, "file", file.getBytes());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @GetMapping(value="/download/{article}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity download(@PathVariable String article){
+        byte[] bytes = articleService.getArticle(article).getFile();
+        System.out.println(bytes);
+
+        String fileName = "article.pdf";
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ fileName +"\"").body(bytes);
 
     }
 

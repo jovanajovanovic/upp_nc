@@ -1,6 +1,7 @@
 package com.upp.naucnacentrala.model;
 
 import javax.persistence.*;
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -54,6 +55,10 @@ public class Article implements Serializable {
 
     @Column
     private boolean reject;
+
+    @Lob
+    @Column(length = 10000)
+    private byte[] file;
 
 
     public Article() {
@@ -126,6 +131,23 @@ public class Article implements Serializable {
         this.accept = accept;
         this.doi = doi;
         this.reject = reject;
+    }
+
+    public Article(String title, String apstract, String keyWords, ScientificField scientific, List<CoAuthor> coAuthors, Set<Review> reviewes, Author author, Editor editor, Magazine magazine, String pdf, boolean accept, String doi, boolean reject, byte[] file) {
+        this.title = title;
+        this.apstract = apstract;
+        this.keyWords = keyWords;
+        this.scientific = scientific;
+        this.coAuthors = coAuthors;
+        this.reviewes = reviewes;
+        this.author = author;
+        this.editor = editor;
+        this.magazine = magazine;
+        this.pdf = pdf;
+        this.accept = accept;
+        this.doi = doi;
+        this.reject = reject;
+        this.file = file;
     }
 
     public Long getId() {
@@ -258,6 +280,14 @@ public class Article implements Serializable {
                 ", accept=" + accept +
                 ", doi='" + doi + '\'' +
                 '}';
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
     }
 }
 

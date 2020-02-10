@@ -23,11 +23,11 @@ insert into db_camunda.editor_scientific_field_list (editor_id, scientific_field
 insert into db_camunda.editor_scientific_field_list (editor_id, scientific_field_list_id) values (4, 1);
 
 insert into db_camunda.user(id, name, surname, username, password, city, country, email, title, role, activate)
-values (5, 'Pera', 'Peric', 'peraRev', '$2a$10$kx6ymttdiBQ/3NAz1ssxoeOF8Vwm3LSKFnEkSADPc5x8kgaj/vKnC', 'Ns', 'Srb', 'pera@gmail.com', 'sw', 2, true);
+values (5, 'Pera', 'Peric', 'peraRev', '$2a$10$kx6ymttdiBQ/3NAz1ssxoeOF8Vwm3LSKFnEkSADPc5x8kgaj/vKnC', 'Ns', 'Srb', 'jovanaj33@gmail.com', 'sw', 2, true);
 insert into db_camunda.user(id, name, surname, username, password, city, country, email, title, role, activate)
-values (6, 'Mihailo', 'Peric', 'miki', '$2a$10$kx6ymttdiBQ/3NAz1ssxoeOF8Vwm3LSKFnEkSADPc5x8kgaj/vKnC', 'Ns', 'Srb', 'pera@gmail.com', 'sw', 2, true);
+values (6, 'Mihailo', 'Peric', 'miki', '$2a$10$kx6ymttdiBQ/3NAz1ssxoeOF8Vwm3LSKFnEkSADPc5x8kgaj/vKnC', 'Ns', 'Srb', 'jovanaj33@gmail.com', 'sw', 2, true);
 insert into db_camunda.user(id, name, surname, username, password, city, country, email, title, role, activate)
-values (7, 'Marija', 'Peric', 'mara', '$2a$10$kx6ymttdiBQ/3NAz1ssxoeOF8Vwm3LSKFnEkSADPc5x8kgaj/vKnC', 'Ns', 'Srb', 'pera@gmail.com', 'sw', 2, true);
+values (7, 'Marija', 'Peric', 'mara', '$2a$10$kx6ymttdiBQ/3NAz1ssxoeOF8Vwm3LSKFnEkSADPc5x8kgaj/vKnC', 'Ns', 'Srb', 'jovanaj33@gmail.com', 'sw', 2, true);
 insert into db_camunda.user(id, name, surname, username, password, city, country, email, title, role, activate)
 values (8, 'Milica', 'Milic', 'milicamilic', '$2a$10$kx6ymttdiBQ/3NAz1ssxoeOF8Vwm3LSKFnEkSADPc5x8kgaj/vKnC', 'Ns', 'Srb', 'jovanaj33@gmail.com', 'sw', 1, true);
 insert into db_camunda.reviewer(id) values(5);

@@ -16,6 +16,7 @@ public class DOIService implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
+        System.out.println("==================================================");
         System.out.println("DOI SERVICE");
         Article a = (Article)delegateExecution.getVariable("article");
 
@@ -29,6 +30,7 @@ public class DOIService implements JavaDelegate {
         article.setDoi(doi);
         articleRepository.save(article);
 
+        System.out.println("==================================================");
 
     }
 }
