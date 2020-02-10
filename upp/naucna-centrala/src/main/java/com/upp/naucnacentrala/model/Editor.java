@@ -1,10 +1,11 @@
 package com.upp.naucnacentrala.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
-public class Editor extends User {
+public class Editor extends User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -20,9 +20,9 @@ public class ActivateMagazineService implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         System.out.println("SERVICE ACTIVATE BORAD");
-        MagazineRegisterDto magazine = (MagazineRegisterDto) execution.getVariable("magazine");
+        Magazine magazine = (Magazine) execution.getVariable("magazine");
         System.out.println("Magazine: " + magazine);
-        Magazine findMagazine = magazineRepository.findByTitle(magazine.getName());
+        Magazine findMagazine = magazineRepository.findByTitle(magazine.getTitle());
 
         boolean activate = (Boolean)execution.getVariable("activate");
         findMagazine.setActivate(activate);

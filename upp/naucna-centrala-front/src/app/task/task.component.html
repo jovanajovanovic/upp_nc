@@ -1,0 +1,73 @@
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-6">
+
+            <div class="card-body" *ngIf="object != undefined">
+                <table class="table">
+                    <tbody>
+                        <tr *ngFor="let o of object">
+                            <th *ngIf="o.list == true"  rowspan="o.value.length"> {{o.name}} </th>
+                            
+
+                            <th *ngIf="o.list == false"> {{o.name}} </th>
+                            <td *ngIf="o.list == false; else printList"> {{o.value}}</td>
+                            <ng-template #printList> 
+                                <table> 
+                                    <tr *ngFor="let i of o.value">
+                                       <td> {{i}}</td>  
+                                    </tr>
+                                </table>
+                            </ng-template>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <form class="form-group" [formGroup]="regUserForm" (ngSubmit)="onSubmit()">
+                <div *ngFor="let field of formFields">
+                    <label for={{field.id}} *ngIf="field.type.name !='string'">{{field.label}}</label>
+
+                    <input type="text" formControlName={{field.id}} placeholder="{{field.label}}" ngModel
+                        class="form-control"
+                        *ngIf="field.type.name=='string' && field.id != 'password' && field.id != 'scientific'">
+                    <input type="password" formControlName={{field.id}} placeholder="{{field.label}}" ngModel
+                        class="form-control" *ngIf="field.id=='password'">
+
+                    <input type="checkbox" formControlName={{field.id}} ngModel class="form-control"
+                        *ngIf="field.type.name=='boolean'">
+                    <input type="number" formControlName={{field.id}} placeholder="{{field.label}}" ngModel
+                        class="form-control" *ngIf="field.type.name=='long'">
+                    <select multiple formControlName={{field.id}} *ngIf="field.type.name=='multiselect' && field.id === 'scientific'"
+                        class="form-control">
+                        <option *ngFor="let val of scientificFields" value={{val}}>
+                            {{field.type.values[val]}}
+                        </option>
+                    </select>
+                    <select multiple formControlName={{field.id}} *ngIf="field.type.name=='multiselectE'"
+                        class="form-control">
+                        <option *ngFor="let val of editors" value={{val}}>
+                            {{field.type.values[val]}}
+                        </option>
+                    </select>
+                    <select multiple formControlName={{field.id}} *ngIf="field.type.name=='multiselectR'"
+                        class="form-control">
+                        <option *ngFor="let val of reviewers" value={{val}}>
+                            {{field.type.values[val]}}
+                        </option>
+                    </select>
+                    <select formControlName={{field.id}} *ngIf="field.type.name=='enum'"
+                        class="form-control">
+                        <option *ngFor="let val of enumValues" value={{val}}>
+                            {{field.type.values[val]}}
+                        </option>
+                    </select>
+                    <br>
+                </div>
+
+                <button type="submit" class="btn btn-primary"> Submit </button>
+            </form>
+        </div>
+        <div></div>
+    </div>
+</div>

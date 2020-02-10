@@ -13,7 +13,7 @@
                <tbody> 
                    <tr *ngFor="let t of tasks; let i = index">
                         <th scope="row"> {{i+1}} </th>
-                        <td> <a href="/{{t.name_id}}/{{t.taskId}}"> {{t.name}} </a> </td> 
+                        <td> <a href="/task/{{t.taskId}}"> {{t.name}} </a> </td> 
                         <td> </td> 
                     </tr>
                    

@@ -17,6 +17,8 @@ export class AuthInterceptor implements HttpInterceptor{
             withCredentials : true
         })
 
+        
+
         if(item){
             const cloned = req.clone({
                 headers: req.headers.set("X-Auth-Token", decodedItem.token)
@@ -45,6 +47,10 @@ export class AuthInterceptor implements HttpInterceptor{
 
 
         }else{
+            const cloned = req.clone({
+                headers: req.headers.set("X-Auth-Token", "")
+            });
+
             return next.handle(req).pipe(
                 tap(event => {
                   if (event instanceof HttpResponse) {

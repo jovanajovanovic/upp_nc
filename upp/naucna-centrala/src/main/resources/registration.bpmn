@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1epib2x" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.4.1">
-  <bpmn:process id="registration" isExecutable="true">
+  <bpmn:process id="registration" isExecutable="true" camunda:candidateStarterUsers="guest">
     <bpmn:startEvent id="StartEvent_1" camunda:initiator="starter">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="com.upp.naucnacentrala.camunda_listener.GetScientificFieldsListener" event="start" />
+      </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_1950evn</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1950evn" sourceRef="StartEvent_1" targetRef="Task_159v097" />
@@ -37,7 +40,31 @@
     <bpmn:userTask id="Task_09a8uhe" name="verification reviewer" camunda:assignee="demo">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="status" label="Accept reviewer" type="boolean" />
+          <camunda:formField id="status" label="Accept reviewer" type="boolean">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="r_name" label="Name" type="string" defaultValue="${name}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="r_surname" label="Surname" type="string" defaultValue="${surname}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="r_email" label="Email" type="string" defaultValue="${email}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="r_scientific" label="Scientific fields" type="string" defaultValue="${scientific}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0t9rs4s</bpmn:incoming>
@@ -55,17 +82,69 @@
     <bpmn:userTask id="Task_159v097" name="input data" camunda:assignee="${starter}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="name" label="Name" type="string" />
-          <camunda:formField id="surname" label="Surname" type="string" />
-          <camunda:formField id="city" label="City" type="string" />
-          <camunda:formField id="country" label="Country" type="string" />
-          <camunda:formField id="email" label="Email" type="string" />
-          <camunda:formField id="username" label="Username" type="string" />
-          <camunda:formField id="password" label="Password" type="string" />
-          <camunda:formField id="metier" label="Metier" type="string" />
-          <camunda:formField id="scientific" label="Scientific fields" type="string" />
+          <camunda:formField id="name" label="Name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="surname" label="Surname" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="city" label="City" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="country" label="Country" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="email" label="Email" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="username" label="Username" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="password" label="Password" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="title" label="Title" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="scientific" label="Scientific fields" type="multiselect">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
           <camunda:formField id="reviewer" label="Reviewer" type="boolean" />
         </camunda:formData>
+        <camunda:taskListener event="create">
+          <camunda:script scriptFormat="Groovy">taskFormData = task.getExecution().getProcessEngineServices().getFormService().getTaskFormData(task.getId());
+scientifics = task.getExecution().getVariable("scientifics");
+formFields = taskFormData. getFormFields();
+if(formFields!=null){
+   for(field in formFields){
+       if( field.getId() == "scientific"){
+           //ovo je nase select polje
+           items = field.getType().getValues();
+           for(s in scientifics){
+               items.put(s.getCode(),s.getName());
+           }
+       }
+   }
+}</camunda:script>
+        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1950evn</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_05nf5so</bpmn:incoming>
@@ -79,7 +158,11 @@
     <bpmn:userTask id="Task_0tv2xfk" name="activate user" camunda:assignee="${starter}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="code" label="Activate code" type="string" />
+          <camunda:formField id="code" label="Activate code" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1abiydk</bpmn:incoming>

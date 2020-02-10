@@ -26,14 +26,15 @@ public class AddEditorBoardService implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         System.out.println("SERVICE ADD BORAD");
-        MagazineRegisterDto magazine = (MagazineRegisterDto) execution.getVariable("magazine");
+        Magazine magazine = (Magazine) execution.getVariable("magazine");
         System.out.println("Magazine: " + magazine);
-        Magazine findMagazine = magazineRepository.findByTitle(magazine.getName());
+        Magazine findMagazine = magazineRepository.findByTitle(magazine.getTitle());
         //treba da isparsimo editore i reviewer-e i da popunimo edit board
-        List<String> editorsDto = magazine.getEditors();
+        List<String> editorsDto = (List<String>) execution.getVariable("editors");
         makeEditBoard(editorsDto, findMagazine);
         //reviewers
-        makeAndSaveReviwers(magazine.getReviewers(), findMagazine);
+        List<String> reviewersDto = (List<String>) execution.getVariable("reviewers");
+        makeAndSaveReviwers(reviewersDto, findMagazine);
     }
 
     private void makeAndSaveReviwers(List<String> reviewers, Magazine findMagazine) {

@@ -13,4 +13,5 @@ public interface ReviewerRepository extends CrudRepository<Reviewer, Long> {
     List<Reviewer> findByScientificFieldList(List<ScientificField> scientifics);
 
     Reviewer findByUsername(String username);
+
 }

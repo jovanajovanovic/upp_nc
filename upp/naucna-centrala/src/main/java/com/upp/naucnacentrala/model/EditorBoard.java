@@ -10,10 +10,12 @@ public class EditorBoard {
 
     @OneToOne
     private Editor editor;
+
     @OneToOne
     private ScientificField scientificField;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn
     private Magazine magazine;
 
     public EditorBoard() {

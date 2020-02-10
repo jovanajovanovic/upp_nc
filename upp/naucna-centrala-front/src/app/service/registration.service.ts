@@ -10,8 +10,8 @@ export class RegistrationService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getRegistrationForm(){
-    return this.httpClient.get('/api/user/getRegistrationForm') as Observable<any>
+  runRegistration(){
+    return this.httpClient.get('/api/user/runRegistration') as Observable<any>
   }
 
 
@@ -19,7 +19,7 @@ export class RegistrationService {
     return this.httpClient.get("/api/scientific/get") as Observable<any>;
   }
 
-  register(user, taskId){
-    return this.httpClient.post('/api/user/register/'.concat(taskId), user) as Observable<any>;
+  submit(user, taskId){
+    return this.httpClient.post('/api/user/submit/'.concat(taskId), user) as Observable<any>;
   }
 }

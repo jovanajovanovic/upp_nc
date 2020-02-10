@@ -3,10 +3,11 @@ package com.upp.naucnacentrala.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
-public class Magazine {
+public class Magazine implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,10 +20,9 @@ public class Magazine {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ScientificField> scientificField;
 
+
     @OneToOne
     private Editor chiefEditor;
-
-
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Reviewer> reviewers;
@@ -34,6 +34,19 @@ public class Magazine {
     private boolean activate;
 
     public Magazine() {
+    }
+
+
+
+    public Magazine(Long id, String title, String issn, List<ScientificField> scientificField, Editor chiefEditor, Set<Reviewer> reviewers, MagazineType type, boolean activate) {
+        this.id = id;
+        this.title = title;
+        this.issn = issn;
+        this.scientificField = scientificField;
+        this.chiefEditor = chiefEditor;
+        this.reviewers = reviewers;
+        this.type = type;
+        this.activate = activate;
     }
 
     public Magazine(String title, String issn, List<ScientificField> scientificField, Editor chiefEditor, Set<Reviewer> reviewers, MagazineType type, boolean activate) {
@@ -110,5 +123,20 @@ public class Magazine {
 
     public void setActivate(boolean activate) {
         this.activate = activate;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Magazine{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", issn='" + issn + '\'' +
+                ", scientificField=" + scientificField +
+                ", chiefEditor=" + chiefEditor +
+                ", reviewers=" + reviewers +
+                ", type=" + type +
+                ", activate=" + activate +
+                '}';
     }
 }

@@ -3,6 +3,7 @@ package com.upp.naucnacentrala.services.implementation;
 import com.upp.naucnacentrala.dto.EditorReviewerDto;
 import com.upp.naucnacentrala.dto.MagazineDto;
 import com.upp.naucnacentrala.dto.MagazineRegisterDto;
+import com.upp.naucnacentrala.exceptions.ObjectNotFound;
 import com.upp.naucnacentrala.model.*;
 import com.upp.naucnacentrala.repository.EditorRepository;
 import com.upp.naucnacentrala.repository.MagazineRepository;
@@ -71,6 +72,12 @@ public class MagazineServiceImpl implements MagazineService {
         }
         magazineDto.setReviewerList(reviewers);
         return magazineDto;
+    }
+
+    @Override
+    public Magazine getMagazine(String issn) throws ObjectNotFound {
+        Magazine m = magazineRepository.findByIssn(issn).orElseThrow(()-> new ObjectNotFound("Magazine does not exist"));
+        return m;
     }
 
     private EditorReviewerDto makeUserDto(User chief, ScientificField sf) {

@@ -1,6 +1,6 @@
 package com.upp.naucnacentrala.camunda_service;
 
-import com.upp.naucnacentrala.dto.RegisterUserDto;
+import com.upp.naucnacentrala.dto.InputDataDto;
 import com.upp.naucnacentrala.model.User;
 import com.upp.naucnacentrala.repository.UserRepository;
 import org.apache.commons.lang.RandomStringUtils;
@@ -24,7 +24,7 @@ public class SendMailService implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         System.out.println("Send mail....");
-        RegisterUserDto registration = (RegisterUserDto) execution.getVariable("registration");
+        String registration = (String) execution.getVariable("username");
         System.out.println(registration);
 
         //generisemo neki random string
@@ -33,15 +33,15 @@ public class SendMailService implements JavaDelegate {
         boolean useNumber = true;
         String hashCode = RandomStringUtils.random(length, useLetters, useNumber);
 
-        User u = userRepository.findByUsername(registration.getUsername());
+        User u = userRepository.findByUsername(registration);
         u.setCode(hashCode);
         userRepository.save(u);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-        mailMessage.setTo(registration.getEmail());
+        mailMessage.setTo(u.getEmail());
         mailMessage.setSubject("Registration to scientific center");
-        mailMessage.setText(registration.getUsername() +  ",\n Wellcome to scientific center " + ", \n " +
+        mailMessage.setText(registration +  ",\n Wellcome to scientific center " + ", \n " +
                 "Verify your account!\n Your activate code is " + hashCode);
 
         javaMailSender.send(mailMessage);

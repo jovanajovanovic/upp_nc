@@ -1,0 +1,29 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-6">
+
+            <div class="card-body" >
+                <table class="table">
+                    <tbody>
+                        <tr> <th> Title </th> <td> {{magazine.title}}</td></tr>
+                        <tr> <th> ISSN </th> <td> {{magazine.issn}}</td></tr>
+                        <tr> <th rowspan="magazine.scientificField.length"> Scientific fields  </th> 
+                            <td> <table> 
+                                <tr *ngFor="let s of magazine.scientificField"> 
+                                    <td> {{s.name}}</td>
+                                </tr>
+                            </table></td>
+                        </tr>
+                        <tr> <th> Chief editor </th> <td> {{magazine.chiefEditor.name}} {{magazine.chiefEditor.surname}}</td></tr>
+                        <tr> <th> Magazine type </th> <td> {{magazine.type}}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+         
+        </div>
+        <div></div>
+    </div>
+</div>

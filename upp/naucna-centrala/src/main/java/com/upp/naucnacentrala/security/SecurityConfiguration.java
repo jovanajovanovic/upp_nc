@@ -80,7 +80,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/user/login").permitAll()
                 .antMatchers("/user/register").permitAll()
-                .antMatchers("/user/get/tasks").authenticated()
+                .antMatchers("/user/get/tasks").permitAll()
                 .antMatchers("/saveMagazine/{taskId}").hasAuthority(Role.EDITOR.name());
 
 

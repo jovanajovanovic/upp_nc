@@ -9,6 +9,7 @@
                         <th scope="col"> Name </th>
                         <th scope="col"> ISSN number</th>
                         <th scope="col"> Payment </th>
+                        <th scope="col"> </th>
                    </tr>
                </thead>
                <tbody> 
@@ -17,6 +18,10 @@
                         <td> {{t.title}}  </td> 
                         <td> {{t.issn}}</td> 
                         <td> {{t.type}}</td>
+                        <td> <a class="nav-link" href="/magazine/{{t.issn}}"><i class="material-icons">
+                            rate_review
+                            </i>
+                        </a></td>
                     </tr>
                    
                </tbody>

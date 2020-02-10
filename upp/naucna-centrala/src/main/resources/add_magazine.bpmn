@@ -1,20 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1cyrfol" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.4.1">
   <bpmn:process id="registration_magazine" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1">
+    <bpmn:startEvent id="StartEvent_1" camunda:initiator="starter">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="com.upp.naucnacentrala.camunda_listener.GetScientificFieldsListener" event="start" />
+      </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_1ot4zso</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="input_data" name="input data about magazine" camunda:assignee="editor">
+    <bpmn:userTask id="input_data" name="input data about magazine" camunda:assignee="${starter}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="name" label="Name" type="string" />
-          <camunda:formField id="issn" label="ISSN number" type="string" />
-          <camunda:formField id="scientific" label="Scientific fields" type="string" />
+          <camunda:formField id="name" label="Name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="issn" label="ISSN number" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="scientific" label="Scientific fields" type="multiselect">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
           <camunda:formField id="payment" label="Payment" type="enum">
             <camunda:value id="OPEN_ACCESS" name="open access" />
             <camunda:value id="SUBSCRIPTION" name="subscription" />
           </camunda:formField>
         </camunda:formData>
+        <camunda:taskListener event="create">
+          <camunda:script scriptFormat="Groovy">taskFormData = task.getExecution().getProcessEngineServices().getFormService().getTaskFormData(task.getId());
+scientifics = task.getExecution().getVariable("scientifics");
+formFields = taskFormData. getFormFields();
+if(formFields!=null){
+   for(field in formFields){
+       if( field.getId() == "scientific"){
+           //ovo je nase select polje
+           items = field.getType().getValues();
+           for(s in scientifics){
+               items.put(s.getCode(),s.getName());
+           }
+       }
+   }
+}</camunda:script>
+        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1ot4zso</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1ue93v6</bpmn:incoming>
@@ -26,32 +57,111 @@
       <bpmn:outgoing>SequenceFlow_07u4y2n</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_04vfa9x" sourceRef="input_data" targetRef="ServiceTask_0if0d6h" />
-    <bpmn:userTask id="editors" name="add editor and reviewer" camunda:assignee="editor">
+    <bpmn:userTask id="editors" name="add editor and reviewer" camunda:assignee="${starter}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="editors" label="Editors" type="string" />
-          <camunda:formField id="reviewers" label="Reviewers" type="string" />
+          <camunda:formField id="editors" label="Editors" type="multiselectE" />
+          <camunda:formField id="reviewers" label="Reviewers" type="multiselectR" />
+          <camunda:formField id="m_name" label="Name" type="string" defaultValue="${name}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="m_issn" label="ISSN" type="string" defaultValue="${issn}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="r_scientific" label="Scientific fields" type="multiselect" defaultValue="${scientific}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="m_payment" label="Payment" type="enum" defaultValue="${payment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+            <camunda:value id="SUBSCRIPTION" name="subscription" />
+            <camunda:value id="OPEN_ACCESS" name="open access" />
+          </camunda:formField>
         </camunda:formData>
+        <camunda:taskListener event="create">
+          <camunda:script scriptFormat="Groovy">taskFormData = task.getExecution().getProcessEngineServices().getFormService().getTaskFormData(task.getId());
+//editori i recenzenti popunimo select
+editors = task.getExecution().getVariable("all_editors");
+reviewers = task.getExecution().getVariable("all_reviewers");
+formFields = taskFormData. getFormFields();
+if(formFields!=null){
+   for(field in formFields){
+       if( field.getId() == "editors"){
+           //ovo je nase select polje
+           items = field.getType().getValues();
+           for(e in editors){
+               items.put(e.getId(),e.getName() + " " + e.getSurname() + " - " + e.getScientific().getName());
+           }
+       }
+if( field.getId() == "reviewers"){
+           //ovo je nase select polje
+           items = field.getType().getValues();
+           for(e in reviewers){
+               items.put(e.getId(),e.getName() + " " + e.getSurname() + " - " + e.getScientific().getName());
+           }
+       }
+   }
+}</camunda:script>
+        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_07u4y2n</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_14vvgbr</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_07u4y2n" sourceRef="ServiceTask_0if0d6h" targetRef="editors" />
-    <bpmn:serviceTask id="ServiceTask_06ggmke" name="add editors and reviwers" camunda:class="com.upp.naucnacentrala.camunda_service.AddEditorBoardService">
-      <bpmn:incoming>SequenceFlow_14vvgbr</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0srgh3r</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_14vvgbr" sourceRef="editors" targetRef="ServiceTask_06ggmke" />
     <bpmn:userTask id="check_data" name="check input data" camunda:assignee="demo">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="ok" label="Valid data" type="boolean" />
+          <camunda:formField id="m_name" label="Name" type="string" defaultValue="${name}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="m_issn" label="ISSN" type="string" defaultValue="${issn}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="r_scientific" label="Scientific fields" type="multiselect" defaultValue="${scientific}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="m_editors" label="Editors" type="multiselectE" defaultValue="${editors}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="m_reviewers" label="Reviewers" type="multiselectR" defaultValue="${reviewers}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="m_payment" label="Payment" type="enum" defaultValue="${payment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+            <camunda:value id="OPEN_ACCESS" name="open access" />
+            <camunda:value id="SUBSCRIPTION" name="subscription" />
+          </camunda:formField>
+          <camunda:formField id="chief_editor" label="Chief editor" type="string" defaultValue="${chief}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0srgh3r</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_115goli</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0srgh3r" sourceRef="ServiceTask_06ggmke" targetRef="check_data" />
     <bpmn:exclusiveGateway id="ExclusiveGateway_149dm2h" name="valid data?">
       <bpmn:incoming>SequenceFlow_115goli</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ue93v6</bpmn:outgoing>
@@ -65,6 +175,21 @@
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="activate" label="Activate magazine" type="boolean" />
+          <camunda:formField id="m_name" label="Name" type="string" defaultValue="${name}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="m_issn" label="ISSN" type="string" defaultValue="${issn}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="chief_editor" label="Chief editor" type="string" defaultValue="${chief}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_13obwvn</bpmn:incoming>
@@ -82,6 +207,11 @@
       <bpmn:incoming>SequenceFlow_0b12bi5</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0b12bi5" sourceRef="ServiceTask_02i7d6w" targetRef="EndEvent_0bd9s42" />
+    <bpmn:serviceTask id="ServiceTask_06ggmke" name="add editors and reviwers" camunda:class="com.upp.naucnacentrala.camunda_service.AddEditorBoardService">
+      <bpmn:incoming>SequenceFlow_14vvgbr</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0srgh3r</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0srgh3r" sourceRef="ServiceTask_06ggmke" targetRef="check_data" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="registration_magazine">
@@ -109,9 +239,6 @@
         <di:waypoint x="480" y="120" />
         <di:waypoint x="530" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ServiceTask_06ggmke_di" bpmnElement="ServiceTask_06ggmke">
-        <dc:Bounds x="690" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_14vvgbr_di" bpmnElement="SequenceFlow_14vvgbr">
         <di:waypoint x="630" y="120" />
         <di:waypoint x="690" y="120" />
@@ -119,10 +246,6 @@
       <bpmndi:BPMNShape id="UserTask_0e2bc4d_di" bpmnElement="check_data">
         <dc:Bounds x="830" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0srgh3r_di" bpmnElement="SequenceFlow_0srgh3r">
-        <di:waypoint x="790" y="120" />
-        <di:waypoint x="830" y="120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_149dm2h_di" bpmnElement="ExclusiveGateway_149dm2h" isMarkerVisible="true">
         <dc:Bounds x="855" y="195" width="50" height="50" />
         <bpmndi:BPMNLabel>
@@ -164,6 +287,13 @@
       <bpmndi:BPMNEdge id="SequenceFlow_0b12bi5_di" bpmnElement="SequenceFlow_0b12bi5">
         <di:waypoint x="1300" y="220" />
         <di:waypoint x="1392" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_06ggmke_di" bpmnElement="ServiceTask_06ggmke">
+        <dc:Bounds x="690" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0srgh3r_di" bpmnElement="SequenceFlow_0srgh3r">
+        <di:waypoint x="790" y="120" />
+        <di:waypoint x="830" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

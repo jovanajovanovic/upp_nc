@@ -1,7 +1,7 @@
 package com.upp.naucnacentrala.camunda_service;
 
-import com.upp.naucnacentrala.dto.RegisterUserDto;
-import com.upp.naucnacentrala.exceptions.WrongHashCodeException;
+import com.upp.naucnacentrala.dto.InputDataDto;
+import com.upp.naucnacentrala.exceptions.ObjectNotFound;
 import com.upp.naucnacentrala.model.Reviewer;
 import com.upp.naucnacentrala.model.Role;
 import com.upp.naucnacentrala.model.ScientificField;
@@ -33,14 +33,16 @@ public class AcceptReviewerService implements JavaDelegate {
     public void execute(DelegateExecution execution) throws Exception {
         System.out.println(">> PROMENA STATUSA KORISNIKA - SERVISNI TASK");
 
-        RegisterUserDto registration = (RegisterUserDto) execution.getVariable("registration");
+        String registration = (String) execution.getVariable("username");
+        List<String> scientific = (List<String>) execution.getVariable("scientific");
         System.out.println(registration);
 
-        boolean activate = (boolean) execution.getVariable("activate_status");
+        boolean activate = (boolean) execution.getVariable("status");
 
         //proverimo da li se slazu kodovi
-        User u = userRepository.findByUsername(registration.getUsername());
-        List<ScientificField> scientifics = getScientificFields(registration.getScientific());
+        User u = userRepository.findByUsername(registration);
+        System.out.println(u);
+        List<ScientificField> scientifics = getScientificFields(scientific);
         if(activate == true){
             //menjamo status korisnika
             u.setRole(Role.REVIEWER);
@@ -50,10 +52,10 @@ public class AcceptReviewerService implements JavaDelegate {
         }
     }
 
-    private List<ScientificField> getScientificFields(List<String> scientific) {
+    private List<ScientificField> getScientificFields(List<String> scientific) throws ObjectNotFound {
         List<ScientificField> scientificFields = new ArrayList<>();
         for (String s : scientific) {
-            scientificFields.add(this.scientificRepository.findByName(s));
+            scientificFields.add(this.scientificRepository.findByCode(s).orElseThrow(()-> new ObjectNotFound("Scientific field does not exist!")));
         }
         return scientificFields;
     }

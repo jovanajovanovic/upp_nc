@@ -7,6 +7,7 @@ import com.upp.naucnacentrala.repository.UserRepository;
 import com.upp.naucnacentrala.security.TokenUtils;
 
 import com.upp.naucnacentrala.services.AuthenticationService;
+import org.camunda.bpm.engine.IdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -44,6 +45,8 @@ public class AuthenticationController {
     private TokenUtils tokenUtils;
 
     @Autowired
+    private IdentityService identityService;
+    @Autowired
     private UserRepository userRepository;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -71,6 +74,7 @@ public class AuthenticationController {
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 httpHeaders.add("X-Auth-Token", tokenValue);
+                identityService.setAuthenticatedUserId(u.getUsername());
                 return new ResponseEntity<DtoToken>(token, httpHeaders, HttpStatus.OK);
 
             }

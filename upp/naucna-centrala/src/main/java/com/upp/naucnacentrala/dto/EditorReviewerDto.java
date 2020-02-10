@@ -80,4 +80,17 @@ public class EditorReviewerDto implements Serializable {
     public void setScientific(ScientificField scientific) {
         this.scientific = scientific;
     }
+
+    @Override
+    public String toString() {
+        return "EditorReviewerDto{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", surname='" + surname + '\'' +
+                ", role=" + role +
+                ", email='" + email + '\'' +
+                ", scientific=" + scientific +
+                '}';
+    }
 }
