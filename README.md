@@ -1,1 +1,4 @@
-# upp_nc
+# Naucna centrala
+
+Projekat iz predmeta Upravljanje poslovnim procesima.
+
